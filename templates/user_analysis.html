@@ -1,0 +1,377 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load widget_tweaks %}
+{% load staticfiles %}
+{% block extra_style %}
+    .legendLabel{
+    color:#000;
+    float: left;
+    }
+    .panel-title{
+    font-weight:600;
+    }
+    .pie-box .pie-title {
+    text-transform: none;
+    }
+    #flotTip{
+    background-color:#636363;
+    color:#000;
+    padding:3px;
+    border-radius:3px;
+    }
+    .popover{
+    width:100%;
+    }
+    label {
+    text-transform: none;
+    }
+    .input-group-addon {
+    padding: 4px 12px;
+    font-size: 13px;
+    }
+    .form-control{
+    height:25px;
+    }
+    .cursor-hand{
+    cursor: pointer;
+    }
+    #placeholder { width: 450px; height: 200px; position: relative; margin: 0 auto; }
+    .legend table, .legend > div { height: 82px !important; opacity: 1 !important; right: -55px; top: 10px; width: 116px !important; }
+    .legend table { border: 1px solid #555; padding: 5px; }
+    #flot-tooltip { font-size: 12px; font-family: Verdana, Arial, sans-serif; position: absolute; display: none; border: 2px solid; padding: 2px; background-color: #FFF; opacity: 0.8; -moz-border-radius: 5px; -webkit-border-radius: 5px; -khtml-border-radius: 5px; border-radius: 5px; }
+    .legendContainer {
+    background-color: #fff;
+    padding: 2px;
+    margin-bottom: 8px;
+    border-radius: 3px 3px 3px 3px;
+    border: 1px solid #E6E6E6;
+    display: inline-block;
+    margin: 0 auto;
+    }
+    @-moz-document url-prefix() {
+        .form-control {
+            height:auto;
+        }
+    }
+    .ia-chart-title{
+    font-size:14px;
+    font-weight:600;
+    }
+        select {
+    border-color: #6089F0;
+    color: #6089F0;
+    background-color:#ffffff;
+    -webkit-appearance: none;  /*Removes default chrome and safari style*/
+    -moz-appearance: none;  /*Removes default style Firefox*/
+    background: url('/static//img/dropdown_arrow.png') no-repeat;
+    background-position: 93px 5px;
+    width: 110px;
+    }
+{% endblock %}
+{% block body_content %}
+<section class="content">
+  <ol class="breadcrumb">
+    <li class="active"><i class="fa fa-home fa-fw"></i> Home / User Analysis</li>
+  </ol>
+  <div class="header">
+    <div class="col-md-12">
+      <h3 class="header-title">User Analysis</h3>
+      <div class="pull-right">
+        <span id="reportrange"  style="padding-bottom:8px;cursor:pointer;">
+        <i class="fa fa-calendar"></i>
+        <span></span> <b class="caret"></b>
+        </span>
+        <a href="#"    data-urlbase="{% url 'user_analysis.excel_view_user_analysis' %}" {% if is_demo_user %}  style="cursor: default;" {% else %} id="excel_download" {% endif %} >
+        <i  style="padding:0px 10px 0px 5px;" class="fa fa-download"></i>
+        </a><span></span>
+      </div>
+    </div>
+  </div>
+  <!-- CONTENT -->
+  <div class="main-content">
+  <div class="row">
+    <div class="col-md-7">
+      {% include "_message.html" %}
+      <div class="panel ">
+        <div class="panel-heading">
+          <h3 class="panel-title">Malicious User ID Details</h3>
+        </div>
+        <div class="panel-body">
+          <div >
+            <div id="demo">
+              <table class="table  table-hover">
+                <thead>
+                  <tr>
+                    <th width="21%">
+                      <form  action="/user_analysis/" method="get">
+                        <div class="form-group" align="center">
+                          <label>User ID</label>
+                          <div class="input-group">
+                            {{  search_form.user_id|add_class:"form-control"|attr:"required"}}
+                            <span class="input-group-addon cursor-hand">
+                            <input type="hidden" class="form-control" value="user_id">
+                            <i id="id_user_id_search" class="fa fa-search"></i>
+                            </span>
+                          </div>
+                        </div>
+                      </form>
+                    </th>
+                    <th width="20%" style="text-align:center;">
+                      <div class="form-group" >
+                        <label>No. of distinct bot IPs</label>
+                        <br><br><br>
+                      </div>
+                    </th>
+                    <th width="20%" style="text-align:center;">
+                      <div class="form-group" >
+                        <label>No. of bot Hits</label>
+                        <br><br><br>
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% if search %}
+                      <tr>
+                        <td colspan="6" style="text-align:left;">
+                          <h5><a href="/user_analysis/"> Go Back </a></h5>
+                        </td>
+                      </tr>
+                  {% endif %}
+                  {% if user_analysis_details_table %}
+                  {% for detail in user_analysis_details_table %}
+                  <tr class="tbrw">
+                    <td>{{detail.user_id}} <input type="hidden" value="{{forloop.counter}}" /></td>
+                    <td style="text-align:center;">{{detail.no_of_distinct_ips}}</td>
+                    <td style="text-align:center;">{{detail.no_of_hits}}</td>
+                  </tr>
+                {% endfor %}
+                {% else %}
+                    <tr >
+                     <td colspan="6" style="text-align:left;">
+                       <h5 > No data available. </h5>
+                     </td>
+                    </tr>
+                {% endif %}
+                </tbody>
+              </table>
+              <ul class="pagination">
+                {% if user_analysis_details.has_previous %}
+                {% endif %}
+                {% for page in user_analysis_details.paginator.page_range %}
+                {% if forloop.first %}
+                {% if user_analysis_details.paginator.count > 15 %}
+                <li><a class="pagelink" href="page=1">&laquo;</a></li>
+                {% endif %}
+                {% endif %}
+                {% if user_analysis_details_table %}
+                {% if page == user_analysis_details.number %}
+                <li class="active"><a class="pagelink"  href="page={{ page }}">{{ page }}</a></li>
+                {% elif page > user_analysis_details.number|add:"-3" and page < user_analysis_details.number  %}
+                <li ><a class="pagelink" href="page={{ page }}">{{ page }}</a></li>
+                {% elif page < user_analysis_details.number|add:"3" and page > user_analysis_details.number  %}
+                <li ><a class="pagelink" href="page={{ page }}">{{ page }}</a></li>
+                {% endif %}
+                {% endif %}
+                {% if forloop.last %}
+                {% if user_analysis_details.paginator.count > 15 %}
+                <li><a class="pagelink" href="page={{ page }}" >&raquo;</a></li>
+                {% endif %}
+                {% endif %}
+                {% endfor %}
+              </ul>
+            </div>
+            <div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+{% endblock %}
+{% block script_extra %}
+<script type="text/javascript">
+$('#user_anaylsis').addClass("active");
+$('.pagelink').each(function() {
+var s = (window.location).toString();
+if(s.indexOf("?") != -1)
+{
+var url_array = (window.location.toString()).split('&page');
+var url = "";
+if(url_array[0] == (window.location.toString()))
+{
+var url_array_val = (window.location.toString()).split('?page');
+if (url_array_val[0].indexOf("?")>1)
+{
+url = url_array_val[0]+'&'+$(this).attr("href");
+}
+else
+{
+url = url_array_val[0]+'?'+$(this).attr("href");
+}
+}
+else
+{
+url = url_array[0]+'&'+$(this).attr("href");
+}
+
+$(this).attr("href" ,url);
+}
+else
+{
+var url =window.location +'?'+$(this).attr("href");
+$(this).attr("href" ,url);
+}
+});
+
+
+$('#user_anaylsis').addClass("open");
+    var None = 0;
+    $('.menu-toggle').on('click', function() {
+    $(this).parent().closest('li').addClass("open");
+});
+
+function getURLParameter(name) {
+return decodeURIComponent(
+(RegExp(name + '=' + '(.+?)(&|$)', 'i').exec(window.location) || [, ""])[1]
+);
+}
+var now = new Date();
+var date_form = getURLParameter("date_from");
+var date_to   = getURLParameter("date_to");
+var dt_txt = "Last 30 Days";
+var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+$(".isp-more").popover();
+var started_date ='';
+if(date_form)
+{
+    var d = new Date(parseInt(date_form));
+    started_date =d;
+    dt_txt = months[(d.getMonth())] +' '+ d.getDate() + ',' + d.getFullYear();
+}
+{% if request.session.start_date %}
+    else if ({{request.session.start_date}}){
+        var d = new Date(parseInt({{request.session.start_date}}*1000));
+        started_date =d;
+        dt_txt = months[(d.getMonth())] +' '+ d.getDate() + ',' + d.getFullYear();
+    }
+{% endif %}
+var last_date ='';
+if(date_to)
+{
+    var d = new Date(parseInt(date_to));
+    last_date =d;
+    dt_txt = dt_txt + ' - ' + months[(d.getMonth())] +' '+ d.getDate() + ',' + d.getFullYear();
+}
+{% if request.session.end_date %}
+else if ({{request.session.end_date}}){
+    var d = new Date(parseInt({{request.session.end_date}}*1000));
+    last_date =d;
+    dt_txt = dt_txt +' - '+months[(d.getMonth())] +' '+ d.getDate() + ',' + d.getFullYear();
+    }
+{% endif %}
+
+var todayDate = new Date();
+todayDate.setDate(todayDate.getDate() );
+
+var todayDate_start = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
+todayDate_start.setDate(todayDate_start.getDate() - 30);
+
+
+if (last_date!='')
+{
+todayDate_start.setHours(0,0,0,0);
+todayDate.setHours(0,0,0,0);
+last_date.setHours(0,0,0,0);
+if ((last_date - todayDate)==0){
+// document.getElementById('data_delay_notification').style.display = 'block';
+}
+else
+{
+
+// document.getElementById('data_delay_notification').style.display = 'none';
+}
+
+}
+
+
+$('#reportrange').find('span').text(dt_txt);
+var start_date_dp = todayDate_start.getFullYear() + '-' + (todayDate_start.getMonth() + 1) + '-' + todayDate_start.getDate();
+var end_date_dp = todayDate.getFullYear() + '-' + (todayDate.getMonth() + 1) + '-' + todayDate.getDate();
+
+if(started_date){
+start_date_dp = started_date.getFullYear() + '-' + (started_date.getMonth() + 1) + '-' + started_date.getDate();
+}
+
+if(last_date){
+end_date_dp = last_date.getFullYear() + '-' + (last_date.getMonth() + 1) + '-' + last_date.getDate();
+}
+
+$('.input-group-addon').click(function() {
+    $(this).closest("form").submit();
+});
+
+
+$(".datepicker").datepicker({
+    autoclose: !0
+    }), $("#reportrange").daterangepicker({
+        ranges: {
+        "Last 30 Days": [moment().subtract("days", 30), moment().subtract("days", 0)],
+        "This Month": [moment().subtract("days", 2).startOf("month"), moment().subtract("days", 2).endOf("month")],
+        "Last Month": [moment().subtract("month", 1).startOf("month"), moment().subtract("month", 1).endOf("month")]
+        },
+        format: 'YYYY-MM-DD',
+        startDate: start_date_dp,
+        endDate: end_date_dp,
+        maxDate:moment().subtract("days", 0),
+        minDate:moment().subtract("month", 6).startOf("month")
+    }, function (start, end) {
+        $("#reportrange span").html(start.format("MMMM D, YYYY") + " - " + end.format("MMMM D, YYYY"))
+});
+
+
+$('#reportrange').on('apply.daterangepicker', function(ev, picker) {
+    var d1=picker.startDate.format('YYYY-MM-DD');
+    var d2=picker.endDate.format('YYYY-MM-DD');
+    d1_date = new Date(d1);
+    d2_date = new Date(d2);
+    d1_date.setUTCHours   (0);
+    d1_date.setUTCMinutes (0);
+    d1_date.setUTCSeconds (0);
+    d2_date.setUTCHours   (0);
+    d2_date.setUTCMinutes (0);
+    d2_date.setUTCSeconds (0);
+    window.location = "/user_analysis/?date_from="+d1_date.getTime()+"&date_to="+d2_date.getTime();
+});
+
+$(".datepicker").datepicker({
+    autoclose: !0
+    }), $(".calendar_inner").daterangepicker({
+        ranges: {
+        "Last 30 Days": [moment().subtract("days", 30), moment().subtract("days", 0)],
+        "This Month": [moment().subtract("days", 2).startOf("month"), moment().subtract("days", 2).endOf("month")],
+        "Last Month": [moment().subtract("month", 1).startOf("month"), moment().subtract("month", 1).endOf("month")]
+        },
+        format: 'YYYY-MM-DD',
+        startDate: start_date_dp,
+        endDate: end_date_dp,
+        maxDate:moment().subtract("days", 0),
+        minDate:moment().subtract("month", 6).startOf("month"),
+        opens: 'right'
+    });
+
+
+// Set Excel Download url
+(function (){
+    var start_date = getURLParameter("date_from");
+    var end_date = getURLParameter("date_to");
+    var baseurl = $("#excel_download").attr( 'data-urlbase' );
+    var full_url = baseurl + "?start_date=" + start_date + "&end_date=" + end_date;
+    $("#excel_download").attr( 'href', full_url);
+})()
+
+
+</script>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% if user.is_authenticated %}
+    <div class="navbar navbar-default navbar-static-top navbar-main" role="navigation">
+        <div class="navbar-header">
+            {% if request.session.is_support %}
+                <a class="navbar-brand" style="padding:5px;" href="{% url 'support.dashboard' %}"><img src="{{STATIC_URL}}img/logo.png" style="max-width:140px;"></a>
+            {% else %}
+                <a class="navbar-brand" style="padding:5px;" href="{% url 'ip_analysis.view_traffic_analysis' %}"><img src="{{STATIC_URL}}img/logo.png" style="max-width:140px;"></a>
+            {% endif %}
+        </div>
+        {% if request.session.sid %}
+            <p style="width:200px;;margin: -10px auto 0px auto;" id="display_subscriber"><br>Subscriber :
+                <span class="label label-primary">
+                    <b>{{ request.session.sid }}</b>
+                </span>
+            </p>
+        {% endif %}
+        <ul class="nav navbar-nav navbar-right">
+            <li class="visible-xs">
+                <a href="#" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="fa fa-bars"></i>
+                </a>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle avatar pull-right" style="padding-top:15px;" data-toggle="dropdown">
+                    <span class="hidden-small">{{ user.username }}<b class="caret"></b></span>
+                </a>
+                <ul class="dropdown-menu pull-right">
+                    {% if can_edit  %}
+                        <li>
+                            <a href="{% url 'accounts.user_management' %}">
+                            <i class="fa fa-gear"></i>Account Management</a>
+                        </li>
+                    {% endif %}
+                    <li class="divider"></li>
+                    <li>
+                        <a href="{% url 'accounts.logout' %}">
+                            <i class="fa fa-sign-out"></i>Logout
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+{% endif %}

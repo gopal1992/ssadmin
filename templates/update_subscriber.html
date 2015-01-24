@@ -1,0 +1,44 @@
+{% extends "admin_base.html" %}
+{% load widget_tweaks %}
+{% load i18n %}
+{% load staticfiles %}
+{% block extra_style %}
+label{
+width:20%;
+}
+input[type="radio"], input[type="checkbox"] {
+visibility: visible;
+}
+{% endblock %}
+{% block body_content %}
+<section class="content">
+    <ol class="breadcrumb">
+    <li class="active"><i class="fa fa-home fa-fw"></i>Super Admin / Edit Subscriber</li>
+    </ol>
+    <div class="main-content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="panel" style="margin-top:10px;border:none;">
+                    <div class="panel-heading">
+                    <h2 class="panel-title"><b>Edit Subscriber</b></h2>
+                    </div>
+                    <div class="panel-body">
+                        {% include "_message.html" %}
+                        <form action="#" method="POST">{% csrf_token %}
+                        <p><label for="id_internal_sid">Internal sid:</label> {{ internal_sid }} </p>
+                        <p><label for="id_external_sid">External sid:</label> {{ external_sid }} </p>
+                        {{form.as_p}}
+                        <button type="submit" class="btn btn-primary">Edit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block script_extra %}
+<script type="text/javascript">
+$('#edit_subscriber').addClass("active");
+</script>
+{% endblock %}

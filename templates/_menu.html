@@ -1,0 +1,224 @@
+{## 1 - 'User Access', 2 - 'User Analysis',3 - 'IP Access',4 -'IP Analysis' ##}
+
+
+ <aside class="sidebar">
+     <ul class="nav nav-stacked">
+      {% if request.session.is_support %}
+		{% if request.session.subscriber_name %}
+         <li id="dashboard">
+             <a href="{% url 'ip_analysis.view_traffic_analysis' %}">
+                 <i class="fa fa-dashboard fa-fw" ></i>
+                 <span style="color:#000000;"> Traffic Analysis </span>
+             </a>
+         </li>
+        {% if auth_pages.3 == "1" %}
+         <li id="ip_anaylsis">
+             <a href="/ip_analysis/">
+                 <i class="fa fa-table fa-fw"></i>
+             Bot IP Analysis</a>
+         </li>
+         {% endif %}
+         {% if auth_pages.1 == "1" %}
+         <li id="user_anaylsis">
+             <a href="/user_analysis/">
+                 <i class="fa fa-user fa-fw"></i>
+             User Analysis</a>
+         </li>
+         {% endif %}
+          <li id="aggregator_anaylsis">
+             <a href="/aggregator/aggregator_analysis/">
+                 <i class="fa fa-table fa-fw"></i>
+             Aggregator IP Analysis</a>
+         </li>
+         <li id="dpdown-nemu" >
+             <a>
+                 <i class="fa fa-cogs fa-fw"></i>
+                 <span>Configuration </span>
+             </a>
+             <ul  class="submenu" style="padding-left: 15px;">
+             {% if auth_pages.3 == "1" %}
+                 <li id="botresponse" style="list-style: none;height:28px;">
+                     <a href="{% url 'ip_analysis.view_bot_response' %}">
+                         <i class="fa fa-laptop fa-fw"></i>
+                         <span>Bot Response List</span>
+                     </a>
+                 </li>
+                 {% endif %}
+                {% if auth_pages.2 == "1" %}
+                 <li id="ip_manage" style="list-style: none;height:28px;">
+                     <a href="/ip_access_list/">
+                         <i class="fa fa-list fa-fw"></i>
+                         <span>IP Access List</span>
+                     </a>
+                 </li>
+                 {% endif %}
+                {% if auth_pages.0 == "1" %}
+                  <li id="user_manage" style="list-style: none;height:28px;">
+                     <a href="/user_access_list/">
+                         <i class="fa fa-users"></i>
+                         <span>User Access List</span>
+                     </a>
+                 </li>
+                {% endif %}
+             </ul>
+         </li>
+        <li id="dpdown-nemu">
+             <a>
+                 <i class="fa fa-puzzle-piece fa-fw"></i>
+                 <span>Integration</span>
+             </a>
+             <ul class="submenu" style="padding-left: 15px;">
+                 <li id="getting_started" style="list-style: none;height:28px;">
+                     <a href="/getting_started/">
+                         <i class="fa fa-power-off fa-fw"></i>
+                         <span>Getting Started</span>
+                     </a>
+                 </li>
+                 <li id="subscriber_details" style="list-style: none;height:28px;">
+                     <a href="/subscriber_details/">
+                         <i class="fa fa-user fa-fw"></i>
+                         <span>Subscriber ID Details</span>
+                     </a>
+                 </li>
+                 <li id="download_connectors" style="list-style: none;height:28px;">
+                     <a href="/download_connectors/">
+                         <i class="fa fa-download fa-fw"></i>
+                         <span>Download Connectors</span>
+                     </a>
+                 </li>
+                  <li id="verify_integration" style="list-style: none;height:28px;">
+                     <a href="/verify_integration/">
+                         <i class="fa fa-check-square-o fa-fw"></i>
+                         <span>Verify Integration</span>
+                     </a>
+                 </li>
+             </ul>
+         </li>
+         <!-- Superadmin dashboard url -->
+		{% endif %}
+         <li id="superadmin_dashboard">
+             <a href="{% url 'support.dashboard' %}">
+                 <i class="fa fa-dashboard fa-fw"></i>
+                 Super-Admin </a>
+                  <ul  class="submenu" style="padding-left: 15px;">
+                 <li style="list-style: none;height:28px;" id="create_subscriber">
+                     <a href="{% url 'support.new_subscriber' %}">
+                         <i class="fa  fa-plus-square-o fa-fw"></i>
+                         <span> Create Subscriber</span>
+                     </a>
+                 </li>
+                 <li style="list-style: none;height:28px;" id="enable_subscriber">
+                     <a href="{% url 'support.reactivate_subscriber' %}">
+                         <i class="fa fa-fw fa-thumbs-o-up"></i>
+                         <span>Enable Subscriber</span>
+                     </a>
+                 </li>
+                 <li style="list-style: none;height:28px;" id="delete_subscriber">
+                     <a href="{% url 'support.deactivate_subscriber' %}">
+                         <i class="fa  fa-trash-o fa-fw"></i>
+                         <span>Disable Subscriber</span>
+                     </a>
+                 </li>
+                 <li style="list-style: none;height:28px;" id="report_subscriber">
+                     <a href="{% url 'support.subscriber_report' %}">
+                         <i class="fa fa-list fa-fw"></i>
+                         <span>View Reports</span>
+                     </a>
+                 </li>
+             </ul>
+         </li>
+         {% else  %}
+         <li id="dashboard">
+             <a href="{% url 'ip_analysis.view_traffic_analysis' %}">
+                 <i class="fa fa-dashboard fa-fw" ></i>
+                 <span style="color:#000000;"> Traffic Analysis </span>
+             </a>
+         </li>
+         {% if auth_pages.3 == "1" %}
+         <li id="ip_anaylsis">
+             <a href="/ip_analysis/">
+                 <i class="fa fa-table fa-fw"></i>
+             Bot IP Analysis</a>
+         </li>
+        {% endif %}
+        {% if auth_pages.1 == "1" %}
+         <li id="user_anaylsis">
+             <a href="/user_analysis/">
+                 <i class="fa fa-user fa-fw"></i>
+             User Analysis</a>
+         </li>
+         {% endif %}
+        <li id="aggregator_anaylsis">
+             <a href="/aggregator/aggregator_analysis/">
+                 <i class="fa fa-table fa-fw"></i>
+             Aggregator IP Analysis</a>
+         </li>
+         <li id="dpdown-nemu" >
+             <a>
+                 <i class="fa fa-cogs fa-fw"></i>
+                 <span>Configuration </span>
+             </a>
+
+             <ul  class="submenu" style="padding-left: 15px;">
+             {% if auth_pages.3 == "1" %}
+                 <li id="botresponse" style="list-style: none;height:28px;">
+                     <a href="{% url 'ip_analysis.view_bot_response' %}">
+                         <i class="fa fa-laptop fa-fw"></i>
+                         <span>Bot Response List</span>
+                     </a>
+                 </li>
+            {% endif %}
+                {% if auth_pages.2 == "1" %}
+                 <li id="ip_manage" style="list-style: none;height:28px;">
+                     <a href="/ip_access_list/">
+                         <i class="fa fa-list fa-fw"></i>
+                         <span>IP Access List</span>
+                     </a>
+                 </li>
+                {% endif %}
+                {% if auth_pages.0 == "1" %}
+                 <li id="user_manage" style="list-style: none;height:28px;">
+                     <a href="/user_access_list/">
+                         <i class="fa fa-users"></i>
+                         <span>User Access List</span>
+                     </a>
+                 </li>
+                {% endif %}
+             </ul>
+         </li>
+        <li id="dpdown-nemu">
+             <a>
+                 <i class="fa fa-puzzle-piece fa-fw"></i>
+                 <span>Integration</span>
+             </a>
+             <ul class="submenu" style="padding-left: 15px;">
+                 <li id="getting_started" style="list-style: none;height:28px;">
+                     <a href="/getting_started/">
+                         <i class="fa fa-power-off fa-fw"></i>
+                         <span>Getting Started</span>
+                     </a>
+                 </li>
+                 <li id="subscriber_details" style="list-style: none;height:28px;">
+                     <a href="/subscriber_details/">
+                         <i class="fa fa-user fa-fw"></i>
+                         <span>Subscriber ID Details</span>
+                     </a>
+                 </li>
+                 <li id="download_connectors" style="list-style: none;height:28px;">
+                     <a href="/download_connectors/">
+                         <i class="fa fa-download fa-fw"></i>
+                         <span>Download Connectors</span>
+                     </a>
+                 </li>
+                  <li id="verify_integration" style="list-style: none;height:28px;">
+                     <a href="/verify_integration/">
+                         <i class="fa fa-check-square-o fa-fw"></i>
+                         <span>Verify Integration</span>
+                     </a>
+                 </li>
+             </ul>
+         </li>
+         {% endif %}
+     </ul>
+</aside>
+<!-- {{ request.META.PATH_INFO }} -->

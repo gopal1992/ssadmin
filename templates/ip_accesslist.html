@@ -1,0 +1,301 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load widget_tweaks %}
+{% block extra_style %}
+.legendLabel {
+color:#000;
+float: left;
+}
+.panel-title {
+font-weight:600;
+}
+.pie-box .pie-title {
+text-transform: none;
+}
+#flotTip {
+background-color:#636363;
+color:#000;
+padding:3px;
+border-radius:3px;
+}
+.popover {
+width:100%;
+}
+label {
+text-transform: none;
+}
+.input-group-addon {
+padding: 4px 12px;
+font-size: 13px;
+}
+.form-control {
+height:25px;
+}
+@-moz-document url-prefix() {
+    .form-control {
+        height:auto;
+    }
+}
+{% endblock %}
+{% block body_content %}
+<section class="content">
+  <ol class="breadcrumb">
+    <li class="active"><i class="fa fa-home fa-fw"></i> Home / Configuration / User Access List </li>
+  </ol>
+  {% include "_demo_account.html" %}
+  <div class="header">
+    <div class="col-md-12">
+      <h3 class="header-title">IP Access List</h3>
+    </div>
+  </div>
+  <!-- CONTENT -->
+  <div class="main-content">
+    <div class="row">
+    <div class="col-md-6">
+    {% include "_message.html" %}
+            <div class="panel ">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Manage IPs <span class="pull-right" style="font-size:14px;font-weight:bold;">
+                    {% if can_edit %}
+                    <a id="add_new_user" data-toggle="modal" data-target="#myModal_add_new" style="text-decoration:none;color:#666666;cursor: pointer;"><i class="fa fa-fw fa-plus "></i>WhiteList a new IP</a>
+                    {% endif %}
+                    </span></h3>
+                    <div class="row"><hr style="margin-top:10px;margin-bottom:0px;"></div>
+                </div>
+                <div class="panel-body">
+
+                <table class="table  table-hover" style="border-top:none;">
+                  <thead>
+                    <tr>
+                      <th width="80%">
+                        <form  action="/ip_access_list/" method="get">
+                          <div class="form-group" align="center">
+                            <label>IP Address</label>
+                            <div class="input-group">
+                              {{  search_from.ip_address|add_class:"form-control" }}
+                              <span class="input-group-addon" style="cursor: pointer;">
+                              <i id= "id_ip_address_search" class="fa fa-search"></i>
+                              </span>
+                            </div>
+                          </div>
+                        </form>
+                      </th>
+                      <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% if search %}
+                          <tr >
+                            <td  style="text-align:left;">
+                              <h5 ><a href="/ip_access_list/"> Go Back </a>  </h5>
+                            </td>
+                            <td></td>
+                          </tr>
+                        {% endif %}
+                        {% if ip_access_status_table %}
+                            {% for detail in ip_access_status_table %}
+                            <tr class="tbrw">
+                              <td>{{ detail.ip_address }} <input type="hidden" value="{{ forloop.counter }}" /></td>
+                              <td>
+                                    {% if can_edit and not is_demo_user%}
+                                    <form  method="POST"> {% csrf_token %}
+                                      <input type="hidden" name="ip_address" id="id_access_status" value="{{ detail.id }}">
+                                      <input type="hidden" name="access_status_value"   value="{{detail.access_status}}">
+                                      <i class="fa fa-times deleteip" style="cursor: pointer;"></i>
+                                    </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                         {% elif search  %}
+                            <tr>
+                                <td  style="text-align:left;">
+                                  <h5>No data available.</h5>
+                                </td>
+                                <td></td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td  style="text-align:left;">
+                                  <h5>No data available.</h5>
+                                </td>
+                                <td></td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                     <ul class="pagination">
+                  {% if ip_access_status_list.paginator.count > 15 %} <!-- Need to display the pagination number if it more than one page -->
+                  {% for page in ip_access_status_list.paginator.page_range %}
+                  {% if forloop.first %}
+                  {% if ip_access_status_list.paginator.count > 15 %}
+                  <li><a class="pagelink" href="page=1">&laquo;</a></li>
+                  {% endif %}
+                  {% endif %}
+                  {% if ip_access_status_table %}
+                  {% if page == ip_access_status_list.number %}
+                  <li class="active"><a class="pagelink"  href="page={{ page }}">{{ page }}</a></li>
+                  {% elif page > ip_analysis_details.number|add:"-3" and page < ip_analysis_details.number %}
+                  <li ><a class="pagelink" href="page={{ page }}">{{ page }}</a></li>
+                  {% elif page < ip_analysis_details.number|add:"3" and page > ip_analysis_details.number %}
+                  <li ><a class="pagelink" href="page={{ page }}">{{ page }}</a></li>
+                  {% endif %}
+                  {% endif %}
+                  {% if forloop.last %}
+                  {% if ip_access_status_list.paginator.count > 15 %}
+                  <li><a class="pagelink" href="page={{ page }}" >&raquo;</a></li>
+                  {% endif %}
+                  {% endif %}
+                  {% endfor %}
+                  {% endif %}
+                </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+</section>
+
+
+<div class="modal fade" id="myModal_add_new" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Add IP Address</h4>
+            </div>
+            <div class="modal-body">
+            <div id="id_validation_message_panel" class="alert alert-danger hide"></div>
+            {% if not is_demo_user %}
+                <form id="access_status_form" method="POST"> {% csrf_token %}
+            {% endif %}
+              <label>IP Address</label>
+                {{ access_status_add_form.ip_address_add|add_class:"form-control" }}
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <input type="hidden" name="access_status_add" id="id_access_status" value="False">
+            <button {% if not is_demo_user %}type="button" {% else %} type ="button" {% endif %}  class="btn btn-success whitelist" >WhiteList IP</button>
+            </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- Add User Modal End-->
+
+
+
+{% endblock %}
+{% block script_extra %}
+<script src="{{STATIC_URL}}js/linechart.js"></script>
+<script src="{{STATIC_URL}}js/piechart.js"></script>
+<script>
+  $('.pagelink').each(function() {
+      var s = (window.location).toString();
+
+      if(s.indexOf("?") != -1) {
+          var url_array = (window.location.toString()).split('&page');
+          var url = "";
+
+        if(url_array[0] == (window.location.toString())) {
+           var url_array_val = (window.location.toString()).split('?page');
+
+           if (url_array_val[0].indexOf("?")>1) {
+              url = url_array_val[0]+'&'+$(this).attr("href");
+           } else {
+              url = url_array_val[0]+'?'+$(this).attr("href");
+           }
+
+        } else {
+           url = url_array[0]+'&'+$(this).attr("href");
+        }
+
+          $(this).attr("href" ,url);
+      } else {
+          var url =window.location +'?'+$(this).attr("href");
+          $(this).attr("href" ,url);
+      }
+  });
+
+  $(".isp-more").popover();
+
+  $('#ip_manage').addClass("active");
+
+  $('.input-group-addon').click(function() {
+   $(this).closest("form").submit();
+  });
+  {% if can_edit and not is_demo_user %}
+  $('.whitelist').click(function() {
+
+
+      $('input[name="access_status_add"]').val("True");
+      var url = "/ip_access_status_add/";
+
+      $.ajax({
+           type: "POST",
+           url: url,
+           data: $("#access_status_form").serialize(), // serializes the form's elements.
+           success: function(data) {
+               if (data.result) {
+                location.reload();
+               } else {
+                  $('#id_validation_message_panel').removeClass("hide");
+                  $('#id_validation_message_panel').html(data.errors.ip_address_add + '<a href="#" class="close" data-dismiss="alert">&times;</a>');
+               }
+           },
+           error: function(data) {   }
+         });
+  });
+
+   $(document).on("click", ".deleteip", function(e) {
+
+      var url = "/ip_access_status_delete/"+$(this).parent("form").find("input").next().val()+"/";
+      var form_closest = $(this).closest("form");
+      var form_serialized = form_closest.serialize()
+
+      // Warning message for confirmation
+      var current_access_staus = "Whitelist";
+      if (form_serialized.split("&access_status_value=")[1] == "False") {
+         current_access_staus = "Blacklist";
+      }
+
+      var confirm_msg = "Please confirm to remove the IP from " + current_access_staus;
+      bootbox.confirm(confirm_msg, function(result) {
+           if (result == true) {
+               $.ajax({
+                         type: "POST",
+                         url: url,
+                         data: form_serialized, // serializes the form's elements.
+                         success: function(data) {
+                             if(data) {
+                                location.reload();
+                             }
+                         },
+                         error: function(data) {  alert(data.errors); }
+                      });
+          }
+      });
+  });
+  {% else %}
+      {% if is_monitor %}
+      $('.whitelist').click(function() {
+      $('.demo-user-info-text').html("You are in monitor mode.");
+      $('.demo-user-info').css("display","block");
+      });
+      $(document).on("click", ".deleteip", function(e) {
+      $('.demo-user-info-text').html("You are in monitor mode.");
+      $('.demo-user-info').css("display","block");
+      });
+      {% elif is_demo_user %}
+      $('.whitelist').click(function() {
+      $('.demo-user-info').css("display","block");
+      });
+      $(document).on("click", ".deleteip", function(e) {
+      $('.demo-user-info').css("display","block");
+      });
+      {% endif %}
+  {% endif %}
+
+</script>
+{% endblock %}

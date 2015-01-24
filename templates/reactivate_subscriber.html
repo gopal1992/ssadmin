@@ -1,0 +1,40 @@
+{% extends "admin_base.html" %}
+{% load widget_tweaks %}
+{% load i18n %}
+{% load staticfiles %}
+{% block extra_style %}
+label{
+width:20%;
+}
+{% endblock %}
+{% block body_content %}
+
+<section class="content">
+    <ol class="breadcrumb">
+    <li class="active"><i class="fa fa-home fa-fw"></i> Super-Admin / Enable Subscriber</li>
+    </ol>
+    <div class="main-content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="panel" style="margin-top:10px;border:none;">
+                    <div class="panel-heading">
+                        <h2 class="panel-title"><b>Enable Subscriber</b></h2>
+                    </div>
+                    <div class="panel-body">
+                        {% include "_message.html" %}
+                        <form action="#" method="POST">{% csrf_token %}
+                        {{form.as_p}}
+                        <button type="submit" class="btn btn-primary">Enable</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block script_extra %}
+<script type="text/javascript">
+$('#enable_subscriber').addClass("active");
+</script>
+{% endblock %}

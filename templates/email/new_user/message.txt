@@ -1,0 +1,17 @@
+Hello {{user_name}},
+
+Welcome to ShieldSquare Admin Portal !
+
+ShieldSquare Admin Portal provides you detailed visibility of the bot traffic on your website.
+
+Please find below your account credentials:
+URL: {{ dashboard_url }}
+Username: {{ username }}
+Password: {{ password }}
+
+Thanks for choosing ShieldSquare.
+
+Yours sincerely,
+ShieldSquare
+
+Note: Please do not reply to this email because we are not monitoring this inbox. To get in touch with us, drop a mail to support@shieldsquare.com

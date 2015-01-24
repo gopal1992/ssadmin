@@ -1,0 +1,20 @@
+{% include '_message.html' %}
+{% block body_content %}
+<form action="#" method="POST">{% csrf_token %}
+    <div class="form-group">
+            {% if form.user.errors %}
+                <div class="form-group has-error">
+                    User: {{ form.user}}
+                    <span class="help-block">
+                        {{ form.user.errors.0 }}
+                    </span>
+                </div>
+            {% else %}
+                {{ form.user}}
+            {% endif %}
+    </div>
+        <button type="submit" class="btn btn-primary">Disable</button>
+        <br>
+        <br>
+</form>
+{% endblock body_content %}

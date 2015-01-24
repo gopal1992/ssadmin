@@ -1,0 +1,360 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load widget_tweaks %}
+
+{% block extra_style %}
+.table > tbody > tr > td
+{
+border:none;
+}
+{% endblock %}
+
+{% block body_content %}
+<section class="content">
+    <ol class="breadcrumb">
+    <li class="active"><i class="fa fa-home fa-fw"></i> Home / Account Management </li>
+    </ol>
+    {% include "_demo_account.html" %}
+    <div class="header">
+        <div class="col-md-12">
+            <h3 class="header-title">Account Management </h3>
+        </div>
+    </div>
+<div class="main-content">
+        <div class="row">
+            <div class="col-md-7">
+                {% include "_message.html" %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-7">
+                <div class="panel ">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Time Zone  Settings</h3>
+                        <div class="row">
+                            <hr style="margin-top:10px;margin-bottom:0px;">
+                        </div>
+                    </div>
+                    <form method="post" id="timezone-update-form" >
+                        {% csrf_token %}
+                        <div class="panel-body" style="padding-top:0px;">
+                            <div class="col-sm-8">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Your Time Zone</label>
+                                    {{ timezone_form.timezone|add_class:"form-control" }}
+                                </div>
+                            </div>
+                            <div class="col-sm-12" >
+                                <button {% if not is_demo_user %}type="submit" {% else %} type ="button" {% endif %} class="btn btn-success pull-right">Update</button></div>
+                            </div>
+                        </div>
+                    </form>
+            </div>
+        <div class="col-md-7">
+            <div class="panel ">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Manage Users <span class="pull-right" style="font-size:14px;font-weight:bold;"><a id="add_new_user" data-toggle="modal" data-target="#myModal_add_new" style="text-decoration:none;color:#666666;cursor: pointer;"><i class="fa fa-fw fa-plus "></i>Add User</a></span></h3>
+                    <div class="row"><hr style="margin-top:10px;margin-bottom:0px;"></div>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-hover table-striped" style="border-top:none;">
+                        <thead>
+                            <tr>
+                                <th>E-mail</th>
+                                <th>Role</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    <tbody>
+                        {% for subscriber in users %}
+                            <tr>
+                                <td>
+                                    {{ subscriber.user.username }}
+                                </td>
+                                {% for s in subscriber.user.groups.values_list %}
+                                    {% if s.1 == "subscriber_admin" %}
+                                        <td>admin </td>
+                                        <td class="actions">
+                                        <a onclick="pop_edit('{{ subscriber.user.username }}',{% if s.1 == "subscriber_admin" %}'admin'{% else %}'user'{% endif %});" ><i class="fa fa-pencil"></i></a>
+                                        <a onclick="pop_delete('{{ subscriber.user.username }}');"><i class="fa fa-times"></i></a>
+                                        </td>
+                                    {% elif s.1 == "subscriber_user" %}
+                                        <td>user </td>
+                                        <td class="actions">
+                                        <a onclick="pop_edit('{{ subscriber.user.username }}',{% if s.1 == "subscriber_admin" %}'admin'{% else %}'user'{% endif %});" ><i class="fa fa-pencil"></i></a>
+                                        <a onclick="pop_delete('{{ subscriber.user.username }}');"><i class="fa fa-times"></i></a>
+                                        </td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add User Modal-->
+
+<div class="modal fade" id="myModal_add_new" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Add User</h4>
+            </div>
+            <form method="post" id="user-add-form" >
+                {% csrf_token %}
+            <div class="modal-body">
+                <div id="add-form-alert" class="alert alert-danger" style="display:none;">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <span id="add-form-alert-msg"></span>
+                </div>
+                <label for="exampleInputEmail1">E-Mail</label><br>
+                <input type="email" name="email" class="form-control" id="user_email_add" placeholder="Enter E-Mail Address" required ><br>
+                <label>User Privilege</label><br>
+                <table class="table" style="border-top:none;" >
+                    <tr><td  class="col-sm-1" style="padding-top: 7px;padding-bottom:0px;" >
+                        <label><span class="checked add-form-check-admin"><input type="radio" name="access" id="add_admin" value="admin" checked=""></span>
+                    </label></td>
+                    <td class="col-sm-4">Admin</td>
+                    <td class="col-sm-7"></td>
+                    </tr>
+                    <tr >
+                    <td style="padding-top: 7px;padding-bottom:0px;">
+                        <label><span class="checked add-form-check-user"><input type="radio" name="access" id="add_user" value="user" checked="" ></span>
+                        </label>
+                    </td>
+                    <td>View Reports Only</td><td ><input type="hidden" class="form-control" name="privilege" id="user_priviege_add" value="user"></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button {% if not is_demo_user %}type="submit" {% else %} type ="button" {% endif %} class="btn btn-primary">Save changes</button>
+            </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- Add User Modal End-->
+
+
+
+
+
+<!-- Edit User Modal-->
+
+<div class="modal fade" id="myModal_edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" >Edit User</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="user-edit-form" >
+                {% csrf_token %}
+                <label>E-Mail</label><br>
+                <input type="email" class="form-control" name="email" id="user_email_edit" placeholder="Enter E-Mail Address" value="{{ subscriber.user.username }}" readonly="readonly"><br>
+                <label>User Privilege</label><br>
+                    <table class="table" style="border-top:none;" >
+                        <tr><td  class="col-sm-1" style="padding-top: 7px;padding-bottom:0px;" >
+                        <label><span><input type="radio" name="user_privilege" id="privilege_admin" value="admin" ></span>
+                        </label></td>
+                        <td class="col-sm-4">Admin</td><td class="col-sm-7"></td>
+                        </tr>
+                        <tr><td style="padding-top: 7px;padding-bottom:0px;">
+                        <label><span ><input type="radio" name="user_privilege" id="privilege_user" value="privilege" ></span>
+                        </label></td>
+                        <td>View Reports Only</td><td ><input type="hidden" class="form-control" name="privilege" id="user_priviege_id"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button {% if not is_demo_user %}type="submit" {% else %} type ="button" {% endif %} class="btn btn-primary">Save changes</button>
+                </div>
+                </div>
+                </form>
+        <!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Edit User Modal End-->
+
+<!-- Delete User Modal-->
+
+<div class="modal fade" id="myModal_delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" id="user-delete-form" >
+            {% csrf_token %}
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" >Delete User</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="email" id="user_email_delete">
+                    Do you want delete the user <b> <span id="user_email_del"> </span></b>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    <button {% if not is_demo_user %}type="submit" {% else %} type ="button" {% endif %} class="btn btn-danger">Yes, Sure.</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!--Delete User Modal End-->
+
+</section>
+{% endblock %}
+
+{% block script_extra %}
+<script src="{{STATIC_URL}}js/ark.js"></script>
+<script type='text/javascript'>
+{% if not is_demo_user %}
+function pop_edit(userid,group)
+{
+    $('#myModal_edit').modal('show');
+    $('#user_email_edit').attr("value", userid);
+    $("#uniform-privilege_admin").find("span").addClass('rbchecked');
+    $("#uniform-privilege_user").find("span").addClass('rbchecked');
+    if(group=='admin')
+    {
+        $("#uniform-privilege_admin").attr('checked', 'checked');
+        $("#uniform-privilege_user").find("span").removeClass('checked');
+        $("#uniform-privilege_admin").find("span").addClass('checked');
+        $("#privilege_admin").attr('checked', 'checked');
+        $("#user_priviege_id").attr('value', 'admin');
+    }
+    else
+    {
+        $("#uniform-privilege_user").attr('checked', 'checked');
+        $("#uniform-privilege_admin").find("span").removeClass('checked');
+        $("#uniform-privilege_user").find("span").addClass('checked');
+        $("#privilege_user").attr('checked', 'checked');
+        $("#user_priviege_id").attr('value', 'user');
+    }
+}
+
+function pop_delete(userid){
+    $('#myModal_delete').modal('show');
+    $('#user_email_del').text(userid);
+    $('#user_email_delete').attr("value", userid);
+}
+
+$('#privilege_user').on('click', function() {
+    $("#user_priviege_id").attr('value', 'user');
+});
+$('#privilege_admin').on('click', function() {
+    $("#user_priviege_id").attr('value', 'admin');
+});
+
+
+$('.add-form-check-admin').click(function () {
+    $("#user_priviege_add").attr('value', 'admin');
+});
+
+$('.add-form-check-user').click(function () {
+    $("#user_priviege_add").attr('value', 'user');
+});
+
+
+$("#timezone-update-form").submit(function() {
+    var url = "{% url 'accounts.update_timezone' %}"; // the script where you handle the form input.
+    $.ajax({
+    type: "POST",
+    url: url,
+    data: $("#timezone-update-form").serialize(), // serializes the form's elements.
+    success: function(data)
+    {
+    if(data.result)
+    {
+    location.reload();
+    }
+    },
+    error: function(data) { console.log(data); }
+    });
+    return false; // avoid to execute the actual submit of the form.
+});
+
+
+
+
+
+
+
+$("#user-add-form").submit(function() {
+//alert("Hi");
+    var url = "{% url 'accounts.new_user' %}"; // the script where you handle the form input.
+    console.log($("#user-add-form").serialize());
+    $.ajax({
+    type: "POST",
+    url: url,
+    data: $("#user-add-form").serialize(), // serializes the form's elements.
+    success: function(data)
+    {
+    if(data.result)
+    {
+        location.reload();
+    }
+    else
+    {
+        $('#add-form-alert').show();
+        $('#add-form-alert-msg').text(data.errors);
+    }
+    },
+    error: function(data) { console.log(data); }
+    });
+    return false; // avoid to execute the actual submit of the form.
+});
+
+$("#user-edit-form").submit(function() {
+    var url = "{% url 'accounts.edit_user' %}"; // the script where you handle the form input.
+    $.ajax({
+    type: "POST",
+    url: url,
+    data: $("#user-edit-form").serialize(), // serializes the form's elements.
+    success: function(data)
+    {
+        if(data.result)
+        {
+        location.reload();
+        }
+        else
+        {
+        }
+        }
+    });
+    return false; // avoid to execute the actual submit of the form.
+});
+
+$("#user-delete-form").submit(function() {
+    var url = "{% url 'accounts.delete_user' %}"; // the script where you handle the form input.
+    $.ajax({
+    type: "POST",
+    url: url,
+    data: $("#user-delete-form").serialize(), // serializes the form's elements.
+    success: function(data)
+    {
+        if(data.result)
+        {
+        location.reload();
+        }
+    }
+    });
+    return false; // avoid to execute the actual submit of the form.
+});
+{% else %}
+$(document).ready(function() {
+$('.demo-user-info').css("display","block");
+});
+{% endif %}
+</script>
+
+{% endblock %}

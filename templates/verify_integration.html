@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load mathfilters %}
+{% block extra_style %}
+body.cover {
+background:none;
+}
+.main-content{
+min-height: 520px;
+}
+.legendLabel {
+color:#000;
+float: left;
+}
+.panel-title {
+font-weight:600;
+}
+.pie-box .pie-title {
+text-transform: none;
+}
+#flotTip {
+background-color:#636363;
+color:#000;
+padding:3px;
+border-radius:3px;
+}
+.popover {
+width:100%;
+}
+label {
+text-transform: none;
+}
+.input-group-addon {
+padding: 4px 12px;
+font-size: 13px;
+}
+.form-control {
+height:25px;
+}
+@-moz-document url-prefix() {
+.form-control {
+height:auto;
+}
+}
+table{
+font-size: 13px;
+}
+h1.panel-title .popover{
+max-width:450px;
+}
+table tr td
+{
+padding: 5px;
+}
+{% endblock %}
+{% block body_content %}
+<section class="content">
+  <ol class="breadcrumb">
+    <li class="active"><i class="fa fa-home fa-fw"></i> Home / Integration / Verify Integration</li>
+  </ol>
+  <div class="header">
+    <div class="col-md-12">
+      <h3 class="header-title">Verify Integration </h3>
+    </div>
+  </div>
+  <!-- CONTENT -->
+  <div class="main-content">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="panel">
+          <div class="panel-heading">
+            <h1 class="panel-title">Status of ShieldSquare API and JS Integration<a href='/verify_integration/'><i style="color:#428bca;" class="fa fa-refresh pull-right"></i></a></h1>
+            <br>
+            <p>For validating the integration, open the integrated URL on the browser and browse 5 pages with a gap of atleast 5 seconds between each clicks</p>
+          </div>
+          <div >
+            <hr style="margin:0px;">
+          </div>
+          <div class="panel-body">
+            <table border="1px">
+            {% if result %}
+                <tr style="margin-bottom:30px;">
+                  <td style="padding-left:10px;width:200px;">API Data - IP Details</td>
+                  <td style="padding-left:10px;width:200px;">
+                        {% if message.api_message.api_data %}
+                            {% if not message.api_message.ip_address_result.ip_address_res %}
+                                {{ message.api_message.ip_address_result.ip_address }}
+                            {% endif %}
+                        {% endif %}
+                        <img
+                        {% if message.api_message.ip_address_result.ip_address_res %}
+                            src="{{STATIC_URL}}img/tick-mark.png"
+                        {% else %}
+                            src="{{STATIC_URL}}img/cross-mark.png"
+                        {% endif %}
+                        class="img-rounded" alt="140x140" style="width: 25px; height: 25px;margin-left:0px;">
+                        {% if message.api_message.api_data %}
+                            <a id="hovdt2" data-toggle="popover" style="cursor: pointer; cursor: hand;color:#428bca" title=""
+                            data-content="{{ message.api_message.ip_address_result.ip_address_msg }}" data-placement="right" data-trigger="hover" data-original-title=""> ?</a>
+                        {% else %}
+                            <a id="hovdt2" data-toggle="popover" style="cursor: pointer; cursor: hand;color:#428bca" title=""
+                            data-content="{{ message.api_message.api_message }}" data-placement="right" data-trigger="hover" data-original-title=""> ?</a>
+                        {% endif %}
+                  </td>
+                </tr>
+                <tr style="margin-bottom:30px;">
+                  <td style="padding-left:10px;">API Data - Session Details</td>
+                  <td style="padding-left:10px;">
+                  <img
+                    {% if message.api_message.session_details_result.session_details_res %}
+                        src="{{STATIC_URL}}img/tick-mark.png"
+                    {% else %}
+                        src="{{STATIC_URL}}img/cross-mark.png"
+                    {% endif %}
+                    class="img-rounded" alt="140x140" style="width: 25px; height: 25px;margin-left:0px;">
+                    {% if message.api_message.api_data %}
+                        {% if not message.api_message.session_details_result.session_details_res %}
+                            <a id="hovdt3" data-toggle="popover" style="cursor: pointer; cursor: hand;color:#428bca" title=""
+                            data-content="{{ message.api_message.session_details_result.session_details_msg }}" data-placement="right" data-trigger="hover" data-original-title=""> ?</a>
+                        {% endif %}
+                    {% else %}
+                        <a id="hovdt3" data-toggle="popover" style="cursor: pointer; cursor: hand;color:#428bca" title=""
+                        data-content="{{ message.api_message.api_message }}" data-placement="right" data-trigger="hover" data-original-title=""> ?</a>
+                    {% endif %}
+                  </td>
+                </tr>
+                <tr style="margin-bottom:30px;">
+                  <td style="padding-left:10px;">API Data - Identifier Details</td>
+                  <td style="padding-left:10px;">
+                    <img
+                    {% if message.api_message.identifier_details_result.identifier_details_res %}
+                        src="{{STATIC_URL}}img/tick-mark.png"
+                    {% else %}
+                        src="{{STATIC_URL}}img/cross-mark.png"
+                    {% endif %}
+                    class="img-rounded" alt="140x140" style="width: 25px; height: 25px;margin-left:0px;">
+                    {% if message.api_message.api_data %}
+                        {% if not message.api_message.identifier_details_result.identifier_details_res %}
+                            <a id="hovdt4" data-toggle="popover" style="cursor: pointer; cursor: hand;color:#428bca" title=""
+                            data-content="{{ message.api_message.identifier_details_result.identifier_details_msg }}" data-placement="right" data-trigger="hover" data-original-title=""> ?</a>
+                        {% endif %}
+                    {% else %}
+                        <a id="hovdt4" data-toggle="popover" style="cursor: pointer; cursor: hand;color:#428bca" title=""
+                        data-content="{{ message.api_message.api_message }}" data-placement="right" data-trigger="hover" data-original-title=""> ?</a>
+                    {% endif %}
+                  </td>
+                </tr>
+                <tr style="margin-bottom:30px;">
+                  <td style="padding-left:10px;">JS Data</td>
+                  <td style="padding-left:10px;">
+                  <img
+                  {% if message.js_message.js_data %}
+                    src="{{STATIC_URL}}img/tick-mark.png"
+                  {% else %}
+                    src="{{STATIC_URL}}img/cross-mark.png"
+                  {% endif %}
+                  class="img-rounded" alt="140x140" style="width: 25px; height: 25px;margin-left:0px;">
+                  {% if message.js_message.js_data %}
+                      {% if not message.js_message.user_agent_result.user_agent_res %}
+                          <a id="hovdt5" data-toggle="popover" style="cursor: pointer; cursor: hand;color:#428bca" title="" data-content="{{ message.js_message.user_agent_result.user_agent_msg }}" data-placement="right" data-trigger="hover" data-original-title="">?</a>
+                      {% endif %}
+                  {% else %}
+                      <a id="hovdt5" data-toggle="popover" style="cursor: pointer; cursor: hand;color:#428bca" title="" data-content="{{ message.js_message.js_message }}" data-placement="right" data-trigger="hover" data-original-title="">?</a>
+                  {% endif %}
+                  </td>
+                </tr>
+            {% else %}
+                {% if message == 'At least 5 requests should be sent to the ShieldSquare server' %}
+                    <tr style="margin-bottom:30px;">
+                      <td style="padding-left:10px;width:200px;">API Data - IP Details</td>
+                      <td style="padding-left:10px;width:200px;">
+                        <img  src="{{STATIC_URL}}img/cross-mark.png" class="img-rounded" alt="140x140" style="width: 25px; height: 25px">
+                        <a id="hovdt2" data-toggle="popover" style="cursor: pointer; cursor: hand;color:#428bca" title="" data-content="{{ message }}" data-placement="right" data-trigger="hover" data-original-title="" > ?</a>
+                      </td>
+                    </tr>
+                    <tr style="margin-bottom:30px;">
+                      <td style="padding-left:10px;">API Data - Session Details</td>
+                      <td style="padding-left:10px;">
+                        <img src="{{STATIC_URL}}img/cross-mark.png" class="img-rounded" alt="140x140" style="width: 25px; height: 25px">
+                        <a id="hovdt3" data-toggle="popover" style="cursor: pointer; cursor: hand;color:#428bca" title="" data-content="{{ message }}" data-placement="right" data-trigger="hover" data-original-title="" > ?</a>
+                      </td>
+                    </tr>
+                    <tr style="margin-bottom:30px;">
+                      <td style="padding-left:10px;">API Data - Identifier Details</td>
+                      <td style="padding-left:10px;">
+                        <img src="{{STATIC_URL}}img/cross-mark.png" class="img-rounded" alt="140x140" style="width: 25px; height: 25px">
+                        <a id="hovdt4" data-toggle="popover" style="cursor: pointer; cursor: hand;color:#428bca" title="" data-content="{{ message }}" data-placement="right" data-trigger="hover" data-original-title="" > ?</a>
+                      </td>
+                    </tr>
+                    <tr style="margin-bottom:30px;">
+                      <td style="padding-left:10px;">JS Data</td>
+                      <td style="padding-left:10px;">
+                        <img src="{{STATIC_URL}}img/cross-mark.png" class="img-rounded" alt="140x140" style="width: 25px; height: 25px">
+                        <a id="hovdt5" data-toggle="popover" style="cursor: pointer; cursor: hand;color:#428bca" title="" data-content="{{ message }}" data-placement="right" data-trigger="hover" data-original-title="" > ?</a>
+                      </td>
+                    </tr>
+                </table>
+                {% else %}
+                    <P style="margin-left: 41%;margin-top: 5%;margin-bottom: 5%;margin-right: 41%;">No data Available<a id="hovdt2" data-toggle="popover" style="cursor: pointer; cursor: hand;color:#428bca" title="" data-content="{{ message }}" data-placement="center" data-trigger="hover" data-original-title="" > ?</a></P>
+                {% endif %}
+            {% endif %}
+            <br>
+            <p>Reach out to us at support@shieldsquare.com if you need any further help in validating the integration</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block script_extra %}
+<script type="text/javascript">
+  $('#verify_integration').addClass("active open");
+  $('#hovdt1').popover();
+  $('#hovdt2').popover();
+  $('#hovdt3').popover();
+  $('#hovdt4').popover();
+  $('#hovdt5').popover();
+</script>
+{% endblock %}

@@ -1,0 +1,350 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load widget_tweaks %}
+{% block extra_style %}
+.legendLabel {
+color:#000;
+float: left;
+}
+.panel-title {
+font-weight:600;
+}
+.pie-box .pie-title {
+text-transform: none;
+}
+#flotTip {
+background-color:#636363;
+color:#000;
+padding:3px;
+border-radius:3px;
+}
+.popover {
+width:100%;
+}
+label {
+text-transform: none;
+}
+.input-group-addon {
+padding: 4px 12px;
+font-size: 13px;
+}
+.form-control {
+height:25px;
+}
+@-moz-document url-prefix() {
+    .form-control {
+        height:auto;
+    }
+}
+{% endblock %}
+{% block body_content %}
+<section class="content">
+  <ol class="breadcrumb">
+    <li class="active"><i class="fa fa-home fa-fw"></i> Home / Configuration / User Access List </li>
+  </ol>
+  {% include "_demo_account.html" %}
+  <div class="header">
+    <div class="col-md-12">
+      <h3 class="header-title">User Access List</h3>
+    </div>
+  </div>
+  <!-- CONTENT -->
+  <div class="main-content">
+    <div class="row">
+    <div class="col-md-6">
+    {% include "_message.html" %}
+    {% if can_edit %}
+           <div class="panel ">
+                <div class="panel-heading" style="border-bottom: 1px solid #eee;">
+                    <h3 class="panel-title">Whitelist a User ID<span class="pull-right" style="font-size:14px;font-weight:bold;">
+
+
+
+                    </span></h3>
+
+                </div>
+                <div class="panel-body">
+<form id="temp_access"  > {% csrf_token %}
+<label style="width: 100%;">
+<input  name="user_id_add" type="text" style="width: 48%;margin-right: 35px;" placeholder="Enter User ID" required>
+<input  name="access_status" value="1" type="hidden">
+<input  name="access_type" value="0" type="hidden">
+<button class="btn btn-primary temporary" id="temporary_wl" >Temporary Whitelist</button>
+<a id="hovdt1" data-toggle="popover" style="cursor: pointer; cursor: hand;font-size: 16px;" title="" data-content=" User ID will be temporarily whitelisted. But it will be flagged again in future once bot requests are detected from this User ID." data-placement="right" data-trigger="hover" data-original-title="">?</a>
+<div style="width: 86%;margin-top: 6px;padding: 6px;" id="id_validation_message_temporary" class="alert alert-danger hide"></div>
+</label>
+</form>
+<hr><label style="width: 100%;">
+    <form id="permanent_access" > {% csrf_token %}
+<label style="width: 100%;">
+<input  name="user_id_add" type="text" style="width: 48%;margin-right: 35px;" placeholder="Enter User ID" required>
+<input  name="access_status" value="1" type="hidden">
+<input  name="access_type" value="1" type="hidden">
+ <button class="btn btn-success permanent" id="parmanent_wl" >Permanent Whitelist</button>
+<a id="hovdt2" data-toggle="popover" style="cursor: pointer; cursor: hand;font-size: 16px;" title="" data-content="User ID will be permanently whitelisted and it will not be flagged in future. You can remove the User ID from whitelist anytime by manually deleting in the Whitelist table." data-placement="right" data-trigger="hover" data-original-title="">?</a>
+<div style="width: 86%;margin-top: 6px;padding: 6px;" id="id_validation_message_permanent" class="alert alert-danger hide"></div>
+</label>
+</form>
+    </div></div>
+{% endif %}
+            <div class="panel ">
+                <div class="panel-heading">
+                    <h3 class="panel-title">List of permanently Whitelisted User IDs<span class="pull-right" style="font-size:14px;font-weight:bold;">
+
+
+
+                    </span></h3>
+                    <div class="row"><hr style="margin-top:10px;margin-bottom:0px;"></div>
+                </div>
+                <div class="panel-body">
+
+                <table class="table  table-hover" style="border-top:none;">
+                  <thead>
+                    <tr>
+                      <th width="40%">
+                        <form action="/user_access_list/" method="get">
+                          <div class="form-group" align="center">
+                            <label>User ID</label>
+                            <div class="input-group">
+                               {{  user_access_status_search_from.user_id|add_class:"form-control" }}
+                              <span class="input-group-addon" style="cursor: pointer;">
+                              <i id="id_ip_address_search" class="fa fa-search"></i>
+                              </span>
+                            </div>
+                          </div>
+                        </form>
+                      </th>
+<th width="40%">
+                        <form action="/ip_access_list/" method="get">
+                          <div class="form-group" align="center">
+                            <label>Date added</label><br><br>
+
+                          </div>
+                        </form>
+                      </th>
+                      <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% if search %}
+                          <tr >
+                            <td  style="text-align:left;">
+                              <h5 ><a href="/user_access_list/"> Go Back </a>  </h5>
+                            </td>
+                            <td></td>
+                          </tr>
+                    {% endif %}
+                    {% if user_access_status_table %}
+                    {% for user in user_access_status_table %}
+
+                            <tr>
+                                <td style="text-align:left;">
+                                  {{user.user_id}}
+                                </td>
+                                <td style="text-align:center;">
+                                  {{user.date_added}}
+                                </td><td>
+                                 {% if can_edit and not is_demo_user%}
+                                  <form  method="POST">
+                              {% csrf_token %}
+                                <input  name="user_name" value="{{user.user_id}}" type="hidden">
+                                <button type="button" class="close deleteuser" data-dismiss="modal" aria-hidden="true">×</button><input  name="user_id" value="{{user.id}}" type="hidden">
+                                </form>
+                                {% endif %}
+                                </td>
+
+                                <td></td>
+
+                            </tr>
+
+{% endfor %}
+
+
+                        {% else %}
+                            <tr>
+                                <td  style="text-align:left;">
+                                  <h5>No data available.</h5>
+                                </td>
+                                <td></td>
+                            </tr>
+                        {% endif %}
+
+                        </tbody>
+                    </table>
+                                   <ul class="pagination">
+                {% if user_access_status_list.has_previous %}
+                {% endif %}
+                {% for page in user_access_status_list.paginator.page_range %}
+                {% if forloop.first %}
+                {% if user_access_status_list.paginator.count > 15 %}
+                <li><a class="pagelink" href="page=1">&laquo;</a></li>
+                {% endif %}
+                {% endif %}
+                {% if user_access_status_list_table %}
+                {% if page == user_access_status_list.number %}
+                <li class="active"><a class="pagelink"  href="page={{ page }}">{{ page }}</a></li>
+                {% elif page > user_access_status_list.number|add:"-3" and page < user_access_status_list.number  %}
+                <li ><a class="pagelink" href="page={{ page }}">{{ page }}</a></li>
+                {% elif page < user_access_status_list.number|add:"3" and page > user_access_status_list.number  %}
+                <li ><a class="pagelink" href="page={{ page }}">{{ page }}</a></li>
+                {% endif %}
+                {% endif %}
+                {% if forloop.last %}
+                {% if user_access_status_list.paginator.count > 15 %}
+                <li><a class="pagelink" href="page={{ page }}" >&raquo;</a></li>
+                {% endif %}
+                {% endif %}
+                {% endfor %}
+              </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+{% endblock %}
+{% block script_extra %}
+<script src="{{STATIC_URL}}js/linechart.js"></script>
+<script src="{{STATIC_URL}}js/piechart.js"></script>
+<script>
+  $('.pagelink').each(function() {
+      var s = (window.location).toString();
+
+      if(s.indexOf("?") != -1) {
+          var url_array = (window.location.toString()).split('&page');
+          var url = "";
+
+        if(url_array[0] == (window.location.toString())) {
+           var url_array_val = (window.location.toString()).split('?page');
+
+           if (url_array_val[0].indexOf("?")>1) {
+              url = url_array_val[0]+'&'+$(this).attr("href");
+           } else {
+              url = url_array_val[0]+'?'+$(this).attr("href");
+           }
+
+        } else {
+           url = url_array[0]+'&'+$(this).attr("href");
+        }
+
+          $(this).attr("href" ,url);
+      } else {
+          var url =window.location +'?'+$(this).attr("href");
+          $(this).attr("href" ,url);
+      }
+  });
+
+
+  $('#user_manage').addClass("active");
+  $('#hovdt1').popover();
+  $('#hovdt2').popover();
+
+  $('.input-group-addon').click(function() {
+   $(this).closest("form").submit();
+  });
+  {% if can_edit and not is_demo_user %}
+
+
+  $('#temporary_wl').click(function() {
+    var url = "/user_access_status_add/";
+    $(this).prop("disabled",true);
+    $.ajax({
+           type: "POST",
+           url: url,
+           data: $("#temp_access").serialize(), // serializes the form's elements.
+           async: false,
+           success: function(data) {
+               if (data.result) {
+                location.reload();
+               } else {
+                $('#id_validation_message_temporary').html(data.errors.user_id_add + '<a href="#" class="close" data-dismiss="alert">&times;</a>');
+                $('#id_validation_message_temporary').removeClass( "hide" );
+                $('.temporary').removeAttr("disabled");
+               }
+           },
+           error: function(data) {   }
+    });
+  });
+
+
+    $('#parmanent_wl').click(function() {
+    var url = "/user_access_status_add/";
+    $(this).prop("disabled",true);
+      $.ajax({
+           type: "POST",
+           url: url,
+           data: $("#permanent_access").serialize(), // serializes the form's elements.
+           async: false,
+           success: function(data) {
+               if (data.result) {
+                location.reload();
+               } else {
+                $('#id_validation_message_permanent').html(data.errors.user_id_add + '<a href="#" class="close" data-dismiss="alert">&times;</a>');
+                $('#id_validation_message_permanent').removeClass( "hide" );
+                $('#parmanent_wl').removeAttr("disabled");
+               }
+           },
+           error: function(data) {   }
+         });
+  });
+
+
+   $(document).on("click", ".deleteuser", function(e) {
+
+      var url = "/user_access_status_delete/"+$(this).next().val()+"/";
+      var form_closest = $(this).closest("form");
+      var form_serialized = form_closest.serialize();
+      var user_name = $(this).prev().val();
+
+
+
+      var confirm_msg = "Please confirm to remove the User " + user_name;
+      bootbox.confirm(confirm_msg, function(result) {
+           if (result == true) {
+               $.ajax({
+                         type: "POST",
+                         url: url,
+                         data: form_serialized, // serializes the form's elements.
+                         success: function(data) {
+                             if(data) {
+                                location.reload();
+                             }
+                         },
+                         error: function(data) {  alert(data.errors); }
+                      });
+          }
+      });
+  });
+
+   $("input").keypress(function(event) {
+    if (event.which == 13) {
+
+        return false;
+    }
+   });
+  {% else %}
+
+
+      $('.permanent').click(function() {
+        event.preventDefault();
+      $('.demo-user-info').css("display","block");
+      });
+      $('.temporary').click(function() {
+        event.preventDefault();
+      $('.demo-user-info').css("display","block");
+      });
+      $(document).on("click", ".deleteip", function(e) {
+      $('.demo-user-info').css("display","block");
+      });
+
+
+  {% endif %}
+
+</script>
+{% endblock %}

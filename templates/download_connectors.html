@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load mathfilters %}
+{% block extra_style %}
+body.cover {
+background:none;
+}
+.download_link{
+cursor: pointer;
+}
+.main-content{
+min-height: 520px;
+}
+.legendLabel {
+color:#000;
+float: left;
+}
+.panel-title {
+font-weight:600;
+}
+.pie-box .pie-title {
+text-transform: none;
+}
+#flotTip {
+background-color:#636363;
+color:#000;
+padding:3px;
+border-radius:3px;
+}
+.popover {
+width:100%;
+}
+label {
+text-transform: none;
+}
+.input-group-addon {
+padding: 4px 12px;
+font-size: 13px;
+}
+.form-control {
+height:25px;
+}
+@-moz-document url-prefix() {
+.form-control {
+height:auto;
+}
+}
+table{
+font-size: 14px;
+}
+{% endblock %}
+{% block body_content %}
+<section class="content">
+  <ol class="breadcrumb">
+    <li class="active"><i class="fa fa-home fa-fw"></i> Home / Integration / Download Connectors</li>
+  </ol>
+  <div class="header">
+    <div class="col-md-12">
+      <h3 class="header-title">Download Connectors</h3>
+    </div>
+  </div>
+  <!-- CONTENT -->
+  <div class="main-content">
+    <div class="row">
+      <div class="col-md-10">
+        <div class="panel">
+          <div >
+            <hr style="margin:0px;">
+          </div>
+          <div class="panel-body">
+          <table>
+          <tr>
+          <td>
+            <div  class="col-sm-3">
+              <div align="center" class="well" >
+                <p><b>Java</b></p>
+                <img src="{{STATIC_URL}}img/java-logo.png"  class="img-rounded" alt="140x140" style="width: 125px; height: 125px;">
+                <p class='download_link'><a href='{{STATIC_URL}}installation_packages/JavaConnector_v6.zip'><b> Download Java_v6 </b></a></p>
+                <p class='download_link'><a href='{{STATIC_URL}}installation_packages/JavaConnector_v7.zip'><b> Download Java_v7 </b></a></p>
+                <p class='download_link'><a href = 'http://www.shieldsquare.co/blog/getting-started/#Integrate the code'  target="_blank"> Get Started </a></p>
+              </div>
+            </div>
+            <div  class="col-sm-3">
+              <div align="center" class="well" >
+                <p><b>PHP</b></p>
+                <img src="{{STATIC_URL}}img/php-logo.png"  class="img-rounded" alt="140x140" style="width: 125px; height: 80px;margin-top:23px;margin-bottom:23px;">
+                <p class='download_link'><a href='{{STATIC_URL}}installation_packages/PHP_Connector_4.2.zip'><b> Download </b></a></p>
+                <p class='download_link'><a href = 'http://www.shieldsquare.co/blog/getting-started/#Integrate the code' target="_blank"> Get Started </a></p>
+              </div>
+            </div>
+            <div  class="col-sm-3">
+              <div align="center" class="well" >
+                <p><b>.NET</b></p>
+                <img src="{{STATIC_URL}}img/dot-net-logo.png"  class="img-rounded" alt="140x140" style="width: 125px; height: 83px;margin-top:5px;margin-bottom:10px;">
+                <p class='download_link'><a href='{{STATIC_URL}}installation_packages/ASP.NET_Connector_2.0.zip'><b> Download (.NET 2x,3x)</b></a></p>
+                <p class='download_link'><a href='{{STATIC_URL}}installation_packages/ASP.NET_Connector_4.0.zip'><b> Download (.NET 4x)</b></a></p>
+                <p class='download_link'><a href = 'http://www.shieldsquare.co/blog/getting-started/#Integrate the code' target="_blank"> Get Started </a></p>
+              </div>
+            </div>
+            <div  class="col-sm-3">
+              <div align="center" class="well" >
+                <p><b>Python</b></p>
+                <img src="{{STATIC_URL}}img/python-logo.png"  class="img-rounded" alt="140x140" style="width: 125px; height: 120px;margin-bottom:7px;">
+                <p class='download_link'><a href='{{STATIC_URL}}installation_packages/Python_Connector.zip'><b> Download </b></a></p>
+                <p class='download_link'><a href = 'http://www.shieldsquare.co/blog/getting-started/#Integrate the code' target="_blank"> Get Started </a></p>
+              </div>
+            </div>
+          </td>
+          </tr>
+          <tr>
+          <td>
+            <div  class="col-sm-3">
+              <div align="center" class="well" >
+                <p><b>Ruby</b></p>
+                <img src="{{STATIC_URL}}img/ruby-logo.png"  class="img-rounded" alt="140x140" style="width: 80px; height: 80px;margin-top:23px;margin-bottom:23px;">
+                <p class='download_link'><a href='{{STATIC_URL}}installation_packages/Ruby_Connector.zip'><b> Download </b></a></p>
+                <p class='download_link'><a href = 'http://www.shieldsquare.co/blog/getting-started/#Integrate the code' target="_blank"> Get Started </a></p>
+              </div>
+            </div>
+            <div  class="col-sm-3">
+              <div align="center" class="well" >
+                <p><b>Node.js</b></p>
+                <img src="{{STATIC_URL}}img/node-js-logo.png"  class="img-rounded" alt="140x140" style="width: 130px; height: 80px;margin-top:5px;margin-bottom:40px;">
+                <p class='download_link'><a href='{{STATIC_URL}}installation_packages/NodeJS_Connector.zip'><b> Download </b></a></p>
+                <p class='download_link'><a href = 'http://www.shieldsquare.co/blog/getting-started/#Integrate the code' target="_blank"> Get Started </a></p>
+              </div>
+            </div>
+            <div  class="col-sm-3">
+              <div align="center" class="well" >
+                <p><b>Perl</b></p>
+                <img src="{{STATIC_URL}}img/perl-logo.png"  class="img-rounded" alt="140x140" style="width: 125px; height: 100px;margin-bottom:27px;">
+                <p class='download_link'><a href='{{STATIC_URL}}installation_packages/Perl_Connector.zip'><b> Download </b></a></p>
+                <p class='download_link'><a href = 'http://www.shieldsquare.co/blog/getting-started/#Integrate the code' target="_blank"> Get Started </a></p>
+              </div>
+            </div>
+              </td>
+              </tr>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block script_extra %}
+<script type="text/javascript">
+  $('#download_connectors').addClass("active open");
+</script>
+{% endblock %}

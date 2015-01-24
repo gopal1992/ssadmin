@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load widget_tweaks %}
+{% block extra_style %}
+    select {
+    border-color: #6089F0;
+    color: #6089F0;
+    background-color:#ffffff;
+    -webkit-appearance: none;  /*Removes default chrome and safari style*/
+    -moz-appearance: none;  /*Removes default style Firefox*/
+    background: url('{{STATIC_URL}}/img/dropdown_arrow.png') no-repeat;
+    background-position: 93px 5px;
+    width: 110px;
+    }
+{% endblock %}
+{% block body_content %}
+<section class="content">
+  <ol class="breadcrumb">
+    <li><i class="fa fa-home fa-fw"></i> Home / Configuration / Bot Response List </li>
+  </ol>
+  {% include "_demo_account.html" %}
+  <div class="header">
+    <div class="col-md-12">
+      <h3 class="header-title">Bot Response List</h3>
+    </div>
+  </div>
+  <!-- CONTENT -->
+  <div class="main-content">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="panel ">
+          <div class="panel-heading">
+            <h3 class="panel-title">Bot Response</h3>
+          </div>
+          <div class="panel-body">
+            <div >
+              <table class="table table-striped ">
+                <thead>
+                  <tr>
+                    <th>Category</th>
+                    <!-- form-->
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Browser Integrity Check Failed</td>
+                    <!--browser_integrity_form -->
+                    <td id = "id_action_browser_integrity">
+                      <form action="{% url 'ip_analysis.add_browser_integrity_check' %}" method="post">
+                        {% csrf_token %}
+                        {% if can_edit  and not is_monitor and not is_demo_user %}
+                            {{ browser_integrity_form.action|add_class:"ddselect"}}
+                        {% elif is_monitor and not is_demo_user %}
+                            {{ browser_integrity_form.action|add_class:"ddselect"|attr:"disabled:disabled" }}
+                        {% elif not is_demo_user %}
+                            {{ browser_integrity_form.action|add_class:"ddselect"|attr:"disabled:disabled" }}
+                        {% else %}
+	                        <select class="ddselect" id="id_action" name="action"  {% if is_monitor %} disabled="disabled"  {% endif %}>
+	                        <option value="1">Allow</option>
+	                        <option value="2" selected="selected">Show Captcha</option>
+	                        <option value="3">Block</option>
+	                        <option value="4">Feed Fake Data</option>
+	                        </select>
+                        {% endif %}
+                      </form>
+                    </td>
+                  </tr>
+                  <tr>
+                    <!-- ip_analysis.add_http_request_integrity_check -->
+                    <!-- http_request_integrity_form -->
+                    <td>HTTP Request Integrity Check Failed</td>
+                    <td id = "id_action_http_request_integrity_check_failed">
+                      <form action="{% url 'ip_analysis.add_http_request_integrity_check' %}" method="post">
+                        {% csrf_token %}
+                        {% if can_edit and not is_monitor and not is_demo_user  %}
+                            {{http_request_integrity_form.action|add_class:"ddselect" }}
+                        {% elif is_monitor and not is_demo_user %}
+                            {{http_request_integrity_form.action|add_class:"ddselect"|attr:"disabled:disabled" }}
+                        {% elif not is_demo_user %}
+                            {{http_request_integrity_form.action|add_class:"ddselect"|attr:"disabled:disabled" }}
+                        {% else %}
+	                        <select class="ddselect" id="id_action" name="action"  {% if is_monitor %} disabled="disabled"  {% endif %}>
+	                        <option value="1">Allow</option>
+	                        <option value="2" selected="selected">Show Captcha</option>
+	                        <option value="3">Block</option>
+	                        <option value="4">Feed Fake Data</option>
+	                        </select>
+                        {% endif %}
+                      </form>
+                    </td>
+                  </tr>
+                  <tr>
+                    <!-- aggregator_check_form -->
+                    <!-- ip_analysis.add_aggregator_bot_traffic_check-->
+                    <td>Aggregator Bot Traffic</td>
+                    <td id = "id_action_aggregator_bot_traffic">
+                      <form action="{% url 'ip_analysis.add_aggregator_bot_traffic_check' %}" method="post">
+                        {% csrf_token %}
+                        {% if can_edit and not is_monitor and not is_demo_user %}
+                            {{aggregator_check_form.action|add_class:"ddselect" }}
+                        {% elif is_monitor and not is_demo_user %}
+                            {{aggregator_check_form.action|add_class:"ddselect"|attr:"disabled:disabled" }}
+                        {% elif not is_demo_user %}
+                            {{aggregator_check_form.action|add_class:"ddselect"|attr:"disabled:disabled" }}
+                        {% else %}
+                            <select class="ddselect" id="id_action" name="action"  {% if is_monitor %} disabled="disabled"  {% endif %}>
+                            <option value="1" selected="selected">Allow</option>
+                            <option value="2" >Show Captcha</option>
+                            <option value="3">Block</option>
+                            <option value="4">Feed Fake Data</option>
+                            </select>
+                        {% endif %}
+                      </form>
+                    </td>
+                  </tr>
+                  <tr>
+                    <!-- behaviour_integrity_form -->
+                    <!-- ip_analysis.add_behaviour_integrity_check -->
+                    <td>Behaviour Integrity Check Failed</td>
+                    <td id = "id_action_behaviour_integrity">
+                      <form action="{% url 'ip_analysis.add_behaviour_integrity_check' %}" method="post">
+                        {% csrf_token %}
+                        {% if can_edit and not is_monitor and not is_demo_user  %}
+                            {{behaviour_integrity_form.action|add_class:"ddselect" }}
+                        {% elif is_monitor and not is_demo_user %}
+                            {{behaviour_integrity_form.action|add_class:"ddselect"|attr:"disabled:disabled" }}
+                        {% elif not is_demo_user %}
+                            {{behaviour_integrity_form.action|add_class:"ddselect"|attr:"disabled:disabled" }}
+                        {% else %}
+	                        <select class="ddselect" id="id_action" name="action"  {% if is_monitor %} disabled="disabled"  {% endif %}>
+	                        <option value="1" >Allow</option>
+	                        <option value="2" selected="selected">Show Captcha</option>
+	                        <option value="3">Block</option>
+	                        <option value="4">Feed Fake Data</option>
+	                        </select>
+                        {% endif %}
+                      </form>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Rate Limiting Check Failed</td>
+
+                    <td id = "id_action_pages_per_minute">
+                    <form action="{% url 'ip_analysis.add_pages_per_minute' %}" method="post">
+                        {% csrf_token %}
+                        {% if can_edit and not is_monitor and not is_demo_user  %}
+                            {{ pages_per_minute_form.action|add_class:"ddselect" }}
+                        {% elif is_monitor and not is_demo_user  %}
+                            {{pages_per_minute_form.action|add_class:"ddselect"|attr:"disabled:disabled" }}
+                        {% elif not is_demo_user  %}
+                            {{pages_per_minute_form.action|add_class:"ddselect"|attr:"disabled:disabled" }}
+                        {% else %}
+                            <select class="ddselect" id="id_action" name="action"  {% if is_monitor %} disabled="disabled"  {% endif %}>
+                            <option value="1" >Allow</option>
+                            <option value="2" selected="selected">Show Captcha</option>
+                            <option value="3">Block</option>
+                            <option value="4">Feed Fake Data</option>
+                            </select>
+                        {% endif %}
+                    </td>
+                  </form>
+                  </tr>
+                </tbody>
+              </table>
+              {% if is_monitor %}
+              <div style="font-size: 12px;">
+                NOTE : The above options can be edited only in active mode
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block script_extra %}
+<script>
+  $('#botresponse').addClass("active");
+  {% if can_edit and not is_demo_user %}
+
+      $('.ddselect').on('change', function() {
+           var url = $(this).closest("tr").find("form").attr("action"); // the script where you handle the form input.
+
+           $.ajax({
+                  type: "POST",
+                  url: url,
+                  data:  $(this).closest("tr").find("form").serialize(), // serializes the form's elements.
+                  success: function(data) { //TODO: Add success Message if required
+                  },
+                  error: function(data) { console.log(data); }
+                });
+      });
+
+      $(".frm-txt").blur(function() {
+          phone = $(this).val();
+
+          if(phone.match(/^\d+$/)) {
+
+             var url = $(this).closest("tr").find("form").attr("action"); // the script where you handle the form input.
+
+               $.ajax({
+                      type: "POST",
+                      url: url,
+                      data:  $(this).closest("tr").find("form").serialize(), // serializes the form's elements.
+                      success: function(data) { // Add success message if required
+                      },
+                      error: function(data) { console.log(data); }
+                    });
+          }
+          else {
+              alert("Please enter valid input");
+          }
+      });
+  {% else %}
+	(function () {
+		var previous;
+		$(".ddselect").focus(function () {
+			previous = this.value;
+		}).change(function() {
+			$('.demo-user-info').css("display","block");
+			$(this).val(previous);
+		});
+	})();
+    $(".frm-txt").blur(function() {
+      $('.page-minute').val("30");
+      $('.demo-user-info').css("display","block");
+    });
+  {% endif %}
+  $("input").keypress(function(event) {
+	if (event.which == 13) {
+	    {% if is_demo_user  %}
+	    $('.page-minute').val("30");
+	    $('.demo-user-info').css("display","block");
+	    {% endif %}
+	    return false;
+	}
+   });
+</script>
+{% endblock %}

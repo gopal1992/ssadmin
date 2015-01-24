@@ -1,0 +1,8 @@
+Hello {{user_name}},
+
+The password is successfully reset.
+
+
+Regards,
+ShieldSquare Admin.
+Note: This is an auto generated email and please don't respond to this email id. If you have any issues or require any support on ShieldSquare system, please reach out to your admin or reach out to support@shieldsquare.com for prompt response.

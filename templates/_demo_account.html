@@ -1,0 +1,8 @@
+{% if is_demo_user %}
+    <div class="col-sm-offset-2 col-sm-8  alert alert-info alert-dismissible text-center demo-user-info" style="display:none;margin-top:25px;">
+        <a class="close" onclick="$('.demo-user-info').hide()">
+            <span id="id_demo_account_info_message" aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+        </a>
+        <span class="demo-user-info-text">You are using a demo account. All the write operations are either disabled or not saved.</span>
+    </div>
+{% endif %}

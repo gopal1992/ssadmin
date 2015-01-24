@@ -1,0 +1,31 @@
+{% extends "admin_base.html" %}
+{% load widget_tweaks %}
+{% load i18n %}
+{% load staticfiles %}
+{% block body_content %}
+<section class="content">
+<ol class="breadcrumb">
+    <li class="active"><i class="fa fa-home fa-fw"></i> Super Admin / Dashboard</li>
+</ol>
+<div class="main-content">
+<div class="row">
+<div class="col-xs-12">
+     <div class="panel" style="margin-top:10px;border:none;">
+        <div class="panel-heading">
+         <h2 class="panel-title"><b>Super Admin</b></h2>
+        </div>
+        <div class="panel-body">
+        {% include "_message.html" %}
+        <a class="btn btn-primary" style="width: 200px;" href="{% url 'support.new_subscriber' %}">Create Subscriber</a><br/><br/>
+        <a class="btn btn-primary" style="width: 200px;" href="{% url 'support.edit_subscriber' %}">Edit Subscriber</a><br/><br/>
+        <a class="btn btn-primary" style="width: 200px;" href="{% url 'support.reactivate_subscriber' %}">Enable Subscriber </a><br/><br/>
+        <a class="btn btn-primary" style="width: 200px;" href="{% url 'support.deactivate_subscriber' %}">Disable Subscriber</a><br/><br/>
+        <a class="btn btn-primary" style="width: 200px;" href="{% url 'support.subscriber_report' %}">View Subscriber Reports</a><br/><br/>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</section>
+ {% endblock %}

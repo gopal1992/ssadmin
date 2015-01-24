@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      {% load i18n %}
+      {% load staticfiles %}
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>{% block head_title_base %}Shield Square {% block head_title %}{% endblock %}{% endblock %}</title>
+      <link rel="shortcut icon" href="{{STATIC_URL}}img/favicon.png" />
+      <!-- CSS -->
+      {% block style_base %}
+      <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700." rel="stylesheet" type="text/css" />
+      <link href="{{STATIC_URL}}vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+      <link href="{{STATIC_URL}}vendor/bootstrap-jasny/dist/extend/css/jasny-bootstrap.min.css" rel="stylesheet" />
+      <!--<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet" />-->
+      <link href="{{STATIC_URL}}vendor/font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css"  />
+      <link href="{{STATIC_URL}}vendor/bootstrap-daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+      <link href="{{STATIC_URL}}vendor/bootstrap-datepicker/css/datepicker.css" rel="stylesheet" type="text/css" />
+      <link href="{{STATIC_URL}}vendor/select2/select2.css" rel="stylesheet" type="text/css" />
+      <link href="{{STATIC_URL}}vendor/select2/select2-bootstrap.css" rel="stylesheet" type="text/css" />
+      <!-- <link href="{{STATIC_URL}}vendor/jquery.uniform/themes/default/css/uniform.default.min.css" rel="stylesheet" type="text/css" /> -->
+      <link href="{{STATIC_URL}}css/prettify.css" rel="stylesheet" type="text/css" />
+      <link href="{{STATIC_URL}}vendor/fullcalendar/fullcalendar.css" rel="stylesheet" />
+      <link href="{{STATIC_URL}}vendor/fullcalendar/fullcalendar.print.css" rel="stylesheet" media="print" />
+      <link href="{{STATIC_URL}}css/ark.css" rel="stylesheet" type="text/css" />
+      <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+      <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+      <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+      <![endif]-->
+      {% endblock %}
+          <style type="text/css">
+              body.cover {
+              background:none;
+              }
+              .main-content{
+              min-height: 520px;
+              }
+             {% block extra_style %}{% endblock %}
+          </style>
+   </head>
+   <body class="cover">
+      <div class="wrapper">
+         <!-- HEAD NAV -->
+         {% block header %}{% include "_header.html" %}{% endblock %}
+         <!-- END: HEAD NAV -->
+
+         <!-- BODY -->
+         <div class="body">
+            <!-- SIDEBAR -->
+            {% block side_menu %}{% include "_menu.html" %}{% endblock %}
+            <!-- END: SIDEBAR -->
+            {% block body_content %}
+            <section class="content">
+               <ol class="breadcrumb">
+                  <li class="active"><i class="fa fa-home fa-fw"></i> Home / Traffic Analysis </li>
+               </ol>
+               <div class="header">
+                  <div class="col-md-12">
+                     <h3 class="header-title">Traffic Analysis</h3>
+                     <div class="pull-right">
+                        <span id="reportrange"  style="padding-bottom:8px;">
+                        <i class="fa fa-calendar"></i>
+                        <span>This month</span> <b class="caret"></b>
+                        </span>
+                        <i  style="padding:0px 10px 0px 5px;" class="fa fa-download"></i><span>Excel Download</span>
+                     </div>
+                  </div>
+               </div>
+               <!-- CONTENT -->
+               <div class="main-content">
+                  <div class="row">
+                     <div class="col-md-6">
+                        <div class="panel ">
+                           <div class="panel-heading">
+                              <h3 class="panel-title">Traffic Summary</h3>
+                           </div>
+                           <div class="panel-body">
+                              <div id="dashboardConversions" class="chart"></div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-md-6">
+                        <div class="panel ">
+                           <div class="panel-heading">
+                              <h3 class="panel-title">Traffic Classification</h3>
+                           </div>
+                           <div class="panel-body">
+                              <div class="col-md-4 col-sm-4 col-xs-6 text-center pie-box">
+                                 <div class="pie-chart" data-percent="73"><span>0%</span></div>
+                                 <a href="#" class="pie-title">Genuine Users</a>
+                              </div>
+                              <div class="col-md-4 col-sm-4 col-xs-6 text-center pie-box">
+                                 <div class="pie-chart" data-percent="34" data-bar-color="#00aaff"><span>0%</span></div>
+                                 <a href="#" class="pie-title">Trusted Bots</a>
+                              </div>
+                              <div class="col-md-4 col-sm-4 col-xs-6 text-center pie-box">
+                                 <div class="pie-chart" data-percent="57" data-bar-color="#ab4135"><span>0%</span></div>
+                                 <a href="#" class="pie-title">Bad Bots</a>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-6">
+                        <div class="panel ">
+                           <div class="panel-heading">
+                              <h3 class="panel-title">Action Taken on Bad Bot Traffic</h3>
+                           </div>
+                           <div class="panel-body">
+                              <div id="chartPie1" class="chart"  style="height:200px;"></div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-md-6">
+                        <div class="panel ">
+                           <div class="panel-heading">
+                              <h3 class="panel-title">Analysis of Bad Bot Traffic</h3>
+                           </div>
+                           <div class="panel-body">
+                              <div id="chartPie2" class="chart"  style="height:200px;"></div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+               <!-- END: CONTENT -->
+            </section>
+            {% endblock %}
+         </div>
+
+         <!-- END: BODY -->
+
+      </div>
+      <!-- JS -->
+      {% block script_base %}
+      <script src="{{STATIC_URL}}vendor/jquery/dist/jquery.min.js"></script>
+      <script src="{{STATIC_URL}}vendor/jquery-ui/js/jquery-ui.min.js"></script>
+      <script src="{{STATIC_URL}}vendor/jquery.uniform/jquery.uniform.min.js"></script>
+      <script src="{{STATIC_URL}}vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+      <script src="{{STATIC_URL}}vendor/bootstrap-jasny/dist/extend/js/jasny-bootstrap.min.js"></script>
+      <script src="{{STATIC_URL}}vendor/jquery-autosize/jquery.autosize.min.js"></script>
+      <script src="{{STATIC_URL}}vendor/moment/min/moment.min.js"></script>
+      <script src="{{STATIC_URL}}vendor/bootstrap-daterangepicker/daterangepicker.js"></script>
+      <script src="{{STATIC_URL}}vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+      <script src="{{STATIC_URL}}vendor/dropzone/downloads/dropzone.min.js"></script>
+      <script src="{{STATIC_URL}}vendor/jquery.easy-pie-chart/dist/jquery.easypiechart.min.js"></script>
+      <script src="{{STATIC_URL}}vendor/jquery-flot/jquery.flot.js"></script>
+      <script src="{{STATIC_URL}}vendor/jquery-flot/jquery.flot.pie.js"></script>
+      <script src="{{STATIC_URL}}vendor/jquery-flot/jquery.flot.stack.js"></script>
+      <script src="{{STATIC_URL}}vendor/jquery-flot/jquery.flot.resize.js"></script>
+      <script src="{{STATIC_URL}}vendor/jquery-flot/jquery.flot.time.js"></script>
+      <script src="{{STATIC_URL}}vendor/jquery.flot.tooltip.js"></script>
+      <script src="{{STATIC_URL}}vendor/select2/select2.min.js"></script>
+      <script src="{{STATIC_URL}}vendor/fullcalendar/fullcalendar.min.js"></script>
+      <script src="{{STATIC_URL}}vendor/nestable/jquery.nestable.js"></script>
+      <script src="{{STATIC_URL}}js/bootbox.min.js"></script>
+      <script src="https://google-code-prettify.googlecode.com/svn/loader/prettify.js"></script>
+      {% endblock %}
+      {% block script_extra %}
+      <script src="{{STATIC_URL}}js/linechart.js"></script>
+      <script src="{{STATIC_URL}}js/ark.js"></script>
+      {% endblock %}
+      {% block footer %}{% include "_footer.html" %}{% endblock %}
+   </body>
+</html>

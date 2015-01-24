@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load mathfilters %}
+{% block extra_style %}
+body.cover {
+background:none;
+}
+.main-content{
+min-height: 520px;
+}
+.legendLabel {
+color:#000;
+float: left;
+}
+.panel-title {
+font-weight:600;
+}
+.pie-box .pie-title {
+text-transform: none;
+}
+#flotTip {
+background-color:#636363;
+color:#000;
+padding:3px;
+border-radius:3px;
+}
+.popover {
+width:100%;
+}
+label {
+text-transform: none;
+}
+.input-group-addon {
+padding: 4px 12px;
+font-size: 13px;
+}
+.form-control {
+height:25px;
+}
+@-moz-document url-prefix() {
+.form-control {
+height:auto;
+}
+}
+table{
+font-size: 14px;
+}
+{% endblock %}
+{% block body_content %}
+<section class="content">
+  <ol class="breadcrumb">
+    <li class="active"><i class="fa fa-home fa-fw"></i> Home / Integration / Subscriber ID Details</li>
+  </ol>
+  <div class="header">
+    <div class="col-md-12">
+      <h3 class="header-title">Subscriber ID Details</h3>
+    </div>
+  </div>
+  <!-- CONTENT -->
+  <div class="main-content">
+    <div class="row">
+      <div class="col-md-5">
+        <div class="panel">
+          <div class="panel-heading">
+            <h1 class="panel-title">Subscriber ID</h1>
+          </div>
+          <div>
+            <hr style="margin:0px;">
+          </div>
+          <div class="panel-body">
+            <table style="width:100%;">
+              <tr style="margin-bottom:30px;">
+                <td style="padding-left:10px;width:180px;">SandBox ID</td>
+                <td style="padding-left:10px;"><span class="label label-primary">{{ sb_external_sid }}</span></td>
+              </tr>
+              <tr>
+                <td colspan="3">
+                  <hr style="border-top:1px dashed #eee;">
+                </td>
+              </tr>
+              <tr style="margin-bottom:30px;">
+                <td style="padding-left:10px;">Production ID</td>
+                <td style="padding-left:10px;"><span class="label label-primary">{{ external_sid }}</span></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block script_extra %}
+<script type="text/javascript">
+  $('#subscriber_details').addClass("active open");
+</script>
+{% endblock %}

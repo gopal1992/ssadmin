@@ -1,0 +1,41 @@
+{% extends "_base.html" %}
+{% load i18n %}
+{% load widget_tweaks %}
+{% load staticfiles %}
+
+{% include '_message.html' %}
+{% block body_content %}
+<form action="#" method="POST">{% csrf_token %}
+    <div class="form-group">
+        {% if form.username.errors %}
+        <div class="form-group has-error">
+            {{ form.username|add_class:"form-control"|attr:"placeholder:Username" }}
+            <span class="help-block">
+                {{ form.username.errors.0 }}
+            </span>
+        </div>
+        {% else %}
+        {{ form.username|add_class:"form-control"|attr:"placeholder:Username" }}
+        {% endif %}
+        {% if form.email.errors %}
+        <div class="form-group has-error">
+            {{ form.email|add_class:"form-control"|attr:"placeholder:Enter E-mail Address" }}
+            <span class="help-block">
+                {{ form.email.errors.0 }}
+            </span>
+        </div>
+        {% else %}
+        {{ form.email|add_class:"form-control"|attr:"placeholder:Enter E-Mail Address" }}
+        {% endif %}
+        Privilege
+        {{ form.privilege }}
+        Subscriber:
+        {{form.subscriber}}
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+    <br>
+    <br>
+
+</form>
+
+{% endblock body_content %}

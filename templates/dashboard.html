@@ -1,0 +1,471 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load mathfilters %}
+{% block extra_style %}
+.legendLabel{
+color:#000;
+}
+.panel-title{
+font-weight:600;
+}
+.pie-box .pie-title {
+text-transform: none;
+}
+#flotTip{
+background-color:#636363;
+color:#ffffff;
+padding:3px;
+border-radius:3px;
+}
+.popover{
+width:100%;
+}
+.flot-tick-label {
+padding:0 5px 0 5px;
+}
+#legendContainer {
+background-color: #fff;
+padding: 2px;
+margin-bottom: 8px;
+border-radius: 3px 3px 3px 3px;
+border: 1px solid #E6E6E6;
+display: inline-block;
+margin: 0 auto;
+}
+.txt-display{
+visibility: hidden;
+}
+.before-txt-display{
+position: absolute;
+top: 5px;
+left: 40px;
+}
+.after-txt-display{
+position: absolute;
+top: 21px;
+left: 38px;
+}
+.legendLabel{
+padding-right:10px;
+}
+.legendContainer {
+background-color: #fff;
+padding: 2px;
+margin-bottom: 8px;
+border-radius: 3px 3px 3px 3px;
+border: 1px solid #E6E6E6;
+display: inline-block;
+margin: 10px auto;
+}
+.legendContainer_bar {
+background-color: #fff;
+padding: 2px;
+margin-bottom: 8px;
+border-radius: 3px 3px 3px 3px;
+border: 1px solid #E6E6E6;
+display: inline-block;
+margin: 10px auto;
+}
+{% endblock %}
+{% block body_content %}
+<section class="content">
+  <ol class="breadcrumb">
+    <li class="active"><i class="fa fa-home fa-fw"></i> Home / Traffic Analysis </li>
+  </ol>
+  <div class="header">
+    <div class="col-md-12">
+      <h3 class="header-title">Traffic Analysis</h3>
+      <div class="pull-right">
+        <span id="reportrange"  style="padding-bottom:8px;cursor:pointer;">
+        <i class="fa fa-calendar"></i>
+        <span></span> <b class="caret"></b>
+        </span>
+        <a href="#" data-urlbase="{% url 'data_migration.excel_view_traffic_analysis' %}" {% if is_demo_user %}  style="cursor: default;" {% else %} id="excel_download" {% endif %}>
+        <i  style="padding:0px 10px 0px 5px;" class="fa fa-download"></i>
+        </a><span></span>
+      </div>
+    </div>
+  </div>
+  <!-- CONTENT -->
+  <div class="main-content" style="display:none;">
+    {% if is_data_missing %}
+    <div colspan="6" style="text-align:left;">
+      <h6> Shieldsquare API data was not collected for some duration in the selected date range. Hence you might not be seeing data during those periods. </h6>
+      </br>
+    </div>
+    {% endif %}
+    <div class="row">
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="panel ">
+              <div class="panel-heading">
+                <h3 class="panel-title">Traffic Summary </h3>
+              </div>
+              <div class="panel-body">
+                <div id="dashboardConversions" class="chart"></div>
+                <div id="legendContainer" style="margin:0 0 0 25%;"></div>
+              </div>
+            </div>
+            <div class="panel ">
+              <div class="panel-heading">
+                <h3 class="panel-title">Analysis of Bad Bot Traffic</h3>
+              </div>
+              <div class="panel-body" align="center">
+                <div id="chartPie2" class="chart"  style="height:220px;"></div>
+                <div class="legendContainer"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="panel ">
+              <div class="panel-heading">
+                <h3 class="panel-title">Traffic Classification</h3>
+              </div>
+              <div class="panel-body" style="padding-top:90px;padding-bottom:87px;">
+                  {% if res.traffic_classification.total %}
+                        <div id="genuine_user_hov" class="col-md-3 col-sm-3 col-xs-6 text-center pie-box" >
+                          <div class="pie-chart" data-percent="{{ res.traffic_classification.genuineusers|div:res.traffic_classification.total|mul:'100' }}" data-bar-color="#7BF380" style="font-size: 10px;"><span class="txt-display"></span>
+                            <span class="txt-percent before-txt-display"></span>
+                          </div>
+                          <a class="pie-title" style="text-decoration: none;">Genuine Users</a>
+                        </div>
+                        <div id="trusted_user_hov" class="col-md-3 col-sm-3 col-xs-6 text-center pie-box" >
+                          <div class="pie-chart" data-percent="{{ res.traffic_classification.trustedbots|div:res.traffic_classification.total|mul:'100' }}" data-bar-color="#00aaff" style="font-size: 10px;"><span class="txt-display"></span>
+                            <span class="txt-percent before-txt-display"></span>
+                          </div>
+                          <a class="pie-title" style="text-decoration: none;">Crawlers</a>
+                        </div>
+                        <div id="trusted_user_hov" class="col-md-3 col-sm-3 col-xs-6 text-center pie-box" >
+                          <div class="pie-chart" data-percent="{{ res.traffic_classification.r_Aggregator|div:res.traffic_classification.total|mul:'100' }}" data-bar-color="#f7b563" style="font-size: 10px;"><span class="txt-display"></span>
+                            <span class="txt-percent before-txt-display"></span>
+                          </div>
+                          <a class="pie-title" style="text-decoration: none;">Aggregators</a>
+                        </div>
+                        <div id="bad_bots_hov" class="col-md-3 col-sm-3 col-xs-6 text-center pie-box" >
+                          <div class="pie-chart" data-percent="{{ res.traffic_classification.badbots|div:res.traffic_classification.total|mul:'100' }}" data-bar-color="#DB3927" style="font-size: 10px;"><span class="txt-display"></span>
+                            <span class="txt-percent before-txt-display"></span>
+                          </div>
+                          <a class="pie-title" style="text-decoration: none;">Bad Bots</a>
+                        </div>
+                   {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+
+           {% if not is_monitor %}
+            <div class="panel ">
+              <div class="panel-heading">
+                <h3 class="panel-title">Action taken on Bad Bot Traffic</h3>
+              </div>
+                <div class="panel-body" align="center" style="padding-bottom:14px;">
+                        <div id="chartPie1" class="chart"  style="height:220px;"></div>
+                        <div class="legendContainer_bar"></div>
+                </div>
+            </div>
+            {% endif %}
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+    </div>
+  </div>
+  <!-- END: CONTENT -->
+</section>
+{% endblock %}
+{% block script_extra %}
+<script src="{{STATIC_URL}}js/linechart.js"></script>
+<script src="{{STATIC_URL}}js/piechart.js"></script>
+<script src="{{STATIC_URL}}js/barchart.js"></script>
+<script type="text/javascript">
+  $('#dashboard').addClass("active open");
+  var now = new Date();
+  var None = 0;
+  $('.menu-toggle').on('click', function() {
+  $(this).parent().closest('li').addClass("open");
+  });
+
+  $('.pie-chart').mouseover(function() {
+    $(this).find(".txt-display").css("visibility","visible");
+    $(this).find(".txt-percent").removeClass("before-txt-display");
+    $(this).find(".txt-percent").addClass("after-txt-display");
+  });
+
+  $('.pie-chart').mouseout(function() {
+    $(this).find(".txt-display").css("visibility","hidden");
+    $(this).find(".txt-percent").removeClass("after-txt-display");
+    $(this).find(".txt-percent").addClass("before-txt-display");
+  });
+
+
+  function getURLParameter(name) {
+    return decodeURIComponent(
+      (RegExp(name + '=' + '(.+?)(&|$)', 'i').exec(window.location) || [, ""])[1]
+    );
+  }
+
+  var date_from = getURLParameter("start_date");
+  var date_to   = getURLParameter("end_date");
+
+
+  var dt_txt = "Last 30 Days";
+
+  var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  $(".isp-more").popover();
+  var started_date ='';
+  if(date_from)
+  {
+  var d = new Date(parseInt(date_from));
+  started_date =d;
+  dt_txt = months[(d.getMonth())] +' '+ d.getDate() + ',' + d.getFullYear();
+  }
+  {% if request.session.start_date %}
+  else if ({{request.session.start_date}}){
+
+  var d = new Date(parseInt({{request.session.start_date}}*1000));
+  date_from = parseInt({{request.session.start_date}}*1000);
+  started_date =d;
+  dt_txt = months[(d.getMonth())] +' '+ d.getDate() + ',' + d.getFullYear();
+  }
+  {% endif %}
+  var last_date ='';
+  var date_chart="";
+  if(date_to)
+  {
+
+  var d = new Date(parseInt(date_to));
+  last_date =d;
+  dt_txt = dt_txt + ' - ' + months[(d.getMonth())] +' '+ d.getDate() + ',' + d.getFullYear();
+  }
+  {% if request.session.end_date %}
+  else if ({{request.session.end_date}}){
+
+  var d = new Date(parseInt({{request.session.end_date}}*1000));
+  last_date =d;
+  date_to = parseInt({{request.session.end_date}}*1000);
+  dt_txt = dt_txt +' - '+months[(d.getMonth())] +' '+ d.getDate() + ',' + d.getFullYear();
+  }
+  {% endif %}
+
+  var todayDate = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
+  todayDate.setDate(todayDate.getDate());
+
+  var todayDate_start = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
+  todayDate_start.setDate(todayDate_start.getDate() - 30);
+  if (last_date!='')
+  {
+  todayDate_start.setHours(0,0,0,0);
+  todayDate.setHours(0,0,0,0);
+  last_date.setHours(0,0,0,0);
+  if ((last_date - todayDate)==0){
+  //   document.getElementById('data_delay_notification').style.display = 'block';
+  }
+  else
+  {
+
+  //   document.getElementById('data_delay_notification').style.display = 'none';
+  }
+
+  }
+
+
+  $('#reportrange').find('span').text(dt_txt);
+
+
+  var start_date_dp = todayDate_start.getFullYear() + '-' + (todayDate_start.getMonth() + 1) + '-' + todayDate_start.getDate();
+  var end_date_dp = todayDate.getFullYear() + '-' + (todayDate.getMonth() + 1) + '-' + todayDate.getDate();
+
+
+  if(started_date){
+  start_date_dp = started_date.getFullYear() + '-' + (started_date.getMonth() + 1) + '-' + started_date.getDate();
+  }
+
+  if(last_date){
+  end_date_dp = last_date.getFullYear() + '-' + (last_date.getMonth() + 1) + '-' + last_date.getDate();
+  }
+
+
+  $(".datepicker").datepicker({
+  autoclose: !0
+  }), $("#reportrange").daterangepicker({
+  ranges: {
+  "Last 30 Days": [moment().subtract("days", 30), moment().subtract("days", 0)],
+  "This Month": [moment().startOf("month"), moment().endOf("month")],
+  "Last Month": [moment().subtract("month", 1).startOf("month"), moment().subtract("month", 1).endOf("month")]
+  },
+  format: 'YYYY-MM-DD',
+  startDate: start_date_dp,
+  endDate: end_date_dp,
+  maxDate:moment().subtract("days", 0),
+  minDate:moment().subtract("month", 6).startOf("month")
+  }, function (start, end) {
+  $("#reportrange span").html(start.format("MMMM D, YYYY") + " - " + end.format("MMMM D, YYYY"))
+  });
+  $('#reportrange').on('apply.daterangepicker', function(ev, picker) {
+  var d1=picker.startDate.format('YYYY-MM-DD');
+  var d2=picker.endDate.format('YYYY-MM-DD');
+  d1_date = new Date(d1);
+  d2_date = new Date(d2);
+  d1_date.setUTCHours   (0);
+  d1_date.setUTCMinutes (0);
+  d1_date.setUTCSeconds (0);
+  d2_date.setUTCHours   (0);
+  d2_date.setUTCMinutes (0);
+  d2_date.setUTCSeconds (0);
+  window.location = "/home/analysis/?start_date="+d1_date.getTime()+"&end_date="+d2_date.getTime();
+  });
+
+
+  //var dt1 = [30,70,93,321,681,1024,224,1003,331,893,903,733,331];
+  //var dt2 = [122220,233370,167Registeratio993,234521,3457681,834324,734634,8023203,32222321,24433893,29332203,12327323,12332231];
+  //var dt3 = [3220,12370,17993,22521,657681,132124,23464,683203,332231,31893,29203,12333,12231];
+
+  var dt1 = {{ res.traffic_analysis_result.genuineusers|safe }};
+  var dt2 = {{ res.traffic_analysis_result.trustedbots|safe }};
+  var dt3 = {{ res.traffic_analysis_result.badbots|safe}};
+  var dt4 = {{ res.traffic_analysis_result.names|safe }};
+  var dt5 = {{ res.traffic_analysis_result.aggregator|safe }}
+
+
+  //var dt4 = {{ res.traffic_analysis_result.names|safe }};
+
+  if(eval(dt1.join('+')) ||  eval(dt2.join('+')) || eval(dt3.join('+')) || eval(dt5.join('+'))){
+  $('.main-content').show();
+
+
+ if(!date_from)
+ {
+ date_from = 0;
+ date_to = 1;
+ }
+
+  traffic_analysis(dt1, dt2, dt3, dt4, dt5, date_from, date_to);
+/*if(dt1.length == 1){
+    var displayable_date = data.ip_line_graph_date[0].split(',');
+    $(time_analysis_div).html("");
+    //why is the year hardcoded here?
+    $(time_analysis_div).html('<div class="single_day"><div class="single_day_inner">' + displayable_date[0] + ' :<span class="label label-primary label-single-day" >' + data.ip_line_graph_hits[0] + '</span>' + ' bot hits' + '</div></div>');
+    $(time_analysis_div).css({"opacity":1});
+    $('.legend_line_chart_Container').css({"opacity":0});
+}
+else{
+    traffic_analysis(dt1, dt2, dt3, dt4, dt5, date_from, date_to);
+}*/
+
+  // Traffic Classification Donut Chart Calculations
+
+    var genuine_user_percentage = 0;
+    if ({{res.traffic_classification.total}})
+    {
+      var genuine_user_percentage = (({{res.traffic_classification.genuineusers}}/{{res.traffic_classification.total}})*100);
+
+    }
+
+    var trustedbots_percentage = 0;
+    if ({{res.traffic_classification.total}})
+    {
+      var trustedbots_percentage = (({{res.traffic_classification.trustedbots}}/{{res.traffic_classification.total}})*100);
+    }
+
+    var aggregators_percentage = 0;
+    if ({{res.traffic_classification.total}})
+    {
+      var aggregators_percentage = (({{res.traffic_classification.r_Aggregator}}/{{res.traffic_classification.total}})*100);
+    }
+
+    var badbots_percentage = 0;
+    if ({{res.traffic_classification.total}})
+    {
+      var badbots_percentage = (({{res.traffic_classification.badbots}}/{{res.traffic_classification.total}})*100);
+    }
+
+    $('.pie-chart').easyPieChart({
+        easing: 'easeOutElastic',
+        delay: 3000,
+        onStep: function(from, to, percent) {
+            this.el.children[1].innerHTML = (Math.round(percent*100))/100+"%";
+        }
+    });
+
+     $($($('.pie-chart')[0]).find("span")[0]).text(abbrNum(Math.round({{res.traffic_classification.genuineusers}}),0)+" page hits");
+//      $($('.pie-chart')[0]).data('easyPieChart').update(genuine_user_percentage);
+
+     $($($('.pie-chart')[1]).find("span")[0]).text(abbrNum(Math.round({{res.traffic_classification.trustedbots}}),0)+" page hits");
+//      $($('.pie-chart')[1]).data('easyPieChart').update(trustedbots_percentage);
+
+
+     $($($('.pie-chart')[2]).find("span")[0]).text(abbrNum(Math.round({{res.traffic_classification.r_Aggregator}}),0)+" page hits");
+//      $($('.pie-chart')[2]).data('easyPieChart').update(badbots_percentage);
+
+    $($($('.pie-chart')[3]).find("span")[0]).text(abbrNum(Math.round({{res.traffic_classification.badbots}}),0)+" bot hits");
+
+
+
+
+  if({{ res.bad_bot_actions.total }})
+  {
+  var bad_bot_analysis_data = [{{ res.bad_bot_actions.monitor }},{{ res.bad_bot_actions.captcha }},{{ res.bad_bot_actions.block }},{{ res.bad_bot_actions.feedfakedata }}];
+  var bad_bot_analysis_tot = {{ res.bad_bot_actions.total }};
+  }
+  else
+  {
+  var bad_bot_analysis_data = [0,0,0,0];
+  var bad_bot_analysis_tot = 0;
+  }
+
+  if({{ res.bad_bot_traffic.total }})
+  {
+  var bad_bot_traffic_data= [{{ res.bad_bot_traffic.r_browserIntgrity }},{{ res.bad_bot_traffic.r_Ratelimiting }},{{ res.bad_bot_traffic.r_httpRequestIntegrity }},{{ res.bad_bot_traffic.r_behaviourIntegrity }}];
+  var bad_bot_traffic_tot = {{ res.bad_bot_traffic.total }};
+  }
+  else
+  {
+  var bad_bot_traffic_data= [0,0,0,0,0];
+  var bad_bot_traffic_tot =0;
+  }
+
+  bad_bot_traffic_bar_chart ("#chartPie2",bad_bot_traffic_data,bad_bot_traffic_tot);
+{% if not is_monitor %}
+  action_on_bad_bot_bar_chart("#chartPie1",bad_bot_analysis_data,bad_bot_analysis_tot);
+{% endif %}
+
+
+
+
+
+
+
+
+  $('#hovdt1').popover();
+  $('#hovdt2').popover();
+  $('#hovdt3').popover();
+  }
+  else {
+  $('.main-content').text("No data available.");
+  $('.main-content').show();
+  }
+
+  // Set Excel Download url
+  (function (){
+      var start_date = getURLParameter("start_date");
+      var end_date = getURLParameter("end_date");
+      var baseurl = $("#excel_download").attr( 'data-urlbase' );
+      var full_url = baseurl + "?start_date=" + start_date + "&end_date=" + end_date;
+      $("#excel_download").attr( 'href', full_url);
+  })()
+
+
+</script>
+{% endblock %}

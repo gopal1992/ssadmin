@@ -1,0 +1,143 @@
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% load i18n %}
+    {% load staticfiles %}
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shield Square</title>
+    <link rel="shortcut icon" href="{{STATIC_URL}}img/favicon.png" />
+    <!-- CSS -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700." rel="stylesheet" type="text/css" />
+    <link href="{{STATIC_URL}}vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="{{STATIC_URL}}vendor/font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css"  />
+    <link href="{{STATIC_URL}}css/ark.css" rel="stylesheet" type="text/css" />
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+      body.cover {
+      background: transparent url('{{STATIC_URL}}img/background.jpg') 0 0;
+      background-size: cover;
+      background-attachment: fixed;
+      }
+      ul .errorlist{
+      padding-left:0px;
+      }
+      ul li
+      {
+      list-type:none;
+      }
+    </style>
+  </head>
+  <body class="cover">
+    <div class="login-wrap">
+      <span class="brand">
+      <img src="{{STATIC_URL}}img/logo.png" style="max-width:140px;">
+      </span>
+      <div class="panel">
+        <div class="panel-heading">
+          <h3 class="panel-title">Sign Up</h3>
+        </div>
+        <div class="panel-body">
+          {% include "_message.html" %}
+          {% if error %}
+            <div class="alert alert-danger">
+                <button id= "id_alert_danger" type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <span id="id_alert_danger_message">{{ error }}</span>
+            </div>
+          {% endif %}
+            <form action='/registration/' method='POST'>
+            {% csrf_token %}
+            <table>
+              <tr>
+                <td>Site URL:* </td>
+                <td style="padding-left:30px;padding-bottom:10px;">
+                {% if form.site_url.errors %}
+                <div class="has-error">
+                  {{ form.site_url|add_class:"form-control"|attr:"placeholder:Enter site URL" }}
+                  <span class="help-block">
+                  {{ form.site_url.errors.0 }}
+                  </span>
+                </div>
+                {% else %}
+                  {{ form.site_url|add_class:"form-control"|attr:"placeholder:Enter site URL" }}
+                {% endif %}
+                </td>
+              </tr>
+              <tr>
+                <td>Email:* </td>
+                <td style="padding-left:30px;padding-bottom:10px;">
+                {% if form.email.errors %}
+                <div class="has-error">
+                  {{ form.email|add_class:"form-control"|attr:"placeholder:Enter E-mail Address" }}
+                  <span class="help-block">
+                  {{ form.email.errors.0 }}
+                  </span>
+                </div>
+                {% else %}
+                  {{ form.email|add_class:"form-control"|attr:"placeholder:Enter E-Mail Address" }}
+                {% endif %}
+                </td>
+              </tr>
+              <tr>
+                <td>Password:* </td>
+                <td style="padding-left:30px;padding-bottom:10px;">
+                {% if form.password.errors %}
+                <div class="has-error">
+                  {{ form.password|add_class:"form-control"|attr:"placeholder:Password"}}
+                  <span class="help-block">
+                  {{ form.password.errors.0 }}
+                  </span>
+                </div>
+                {% else %}
+                  {{ form.password|add_class:"form-control"|attr:"placeholder:Password"}}
+                {% endif %}
+                </td>
+              </tr>
+              <tr>
+                <td>Phone: </td>
+                <td style="padding-left:30px;padding-bottom:10px;">
+                {% if form.phone.errors %}
+                <div class="has-error">
+                  {{ form.phone|add_class:"form-control"|attr:"placeholder:Enter Mobile Number" }}
+                  <span class="help-block">
+                  {{ form.phone.errors.0 }}
+                  </span>
+                </div>
+                {% else %}
+                  {{ form.phone|add_class:"form-control"|attr:"placeholder:Enter Mobile Number" }}
+                {% endif %}
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" >
+                    By clicking, you agree to our <a href="http://www.shieldsquare.com/terms-and-conditions.php" target="_blank" >Terms of Service</a>.
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" >
+                    <a href="/resend_verification/">Already registered, resend the activation link?</a>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2"><button id ="id_sign_up" type="submit" class="btn btn-primary ">Sign Up</button></td>
+            </table>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- JS -->
+    <script src="{{STATIC_URL}}vendor/jquery/dist/jquery.min.js"></script>
+    <script src="{{STATIC_URL}}vendor/jquery-ui/js/jquery-ui.min.js"></script>
+    <script src="{{STATIC_URL}}vendor/jquery.uniform/jquery.uniform.min.js"></script>
+    <script src="{{STATIC_URL}}vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="{{STATIC_URL}}vendor/bootstrap-jasny/dist/extend/js/jasny-bootstrap.min.js"></script>
+    <script src="{{STATIC_URL}}vendor/jquery-autosize/jquery.autosize.min.js"></script>
+    <script src="{{STATIC_URL}}vendor/moment/min/moment.min.js"></script>
+  </body>
+</html>
